@@ -39,6 +39,7 @@ code {
   font-size: 90%;
 }
 
+/* Pretty navigations bar */
 nav a {
   text-decoration: none;
   color: #0366d6;
@@ -47,4 +48,16 @@ nav a {
 
 nav a:hover {
   text-decoration: underline;
+}
+
+/* Pretty links */
+a {
+  color: #0366d6;       /* GitHub blue */
+  text-decoration: none; /* Remove underline */
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #014a9e;       /* Darker blue on hover */
+  text-decoration: underline; /* Underline on hover for clarity */
 }
