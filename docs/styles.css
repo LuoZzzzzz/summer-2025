@@ -61,3 +61,7 @@ a:hover {
   color: #014a9e;       /* Darker blue on hover */
   text-decoration: underline; /* Underline on hover for clarity */
 }
+
+p {
+  text-align: justify;
+}
