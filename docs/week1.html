@@ -38,7 +38,7 @@
     <h1>Discriminating Quantum States</h1>
 
     <p>
-        Given two mixed states $\rho_1$ and $\rho_2$ we sample a single photon from one of them with probabilities $p_1$ and $p_2$. 
+        Given two mixed states $\rho_1$ and $\rho_2$ we sample a single photon from one of them with prior probabilities $p_1$ and $p_2$. 
         How do we determine which mixed state the photon came from? 
     </p>
     <p>
@@ -172,10 +172,10 @@
     </p>
 
     <p>
-      The outcome $(1, 2, 1)$ corresponds to the situation where the first, second and third photons yield the outcomes $1$, $2$ and $1$ respectively.
-      In practice however, the identities of the photons and the order of the outcomes will not be known to us.
-      The only information we will have is that there are two photons in region 1 of the detection area, and one photon in region 2 of the detection area.
-      In fact, since we fix $k=3$, it suffice to specify the number of photons that fall within region 1. 
+      The outcome $(1, 2, 1)$ corresponds to the situation where the first, second and third qubits yield the outcomes $1$, $2$ and $1$ respectively.
+      In practice however, the identities of the qubits and the order of the outcomes will not be known to us.
+      The only information we will have is that there are two qubits in state $1$ and one qubit in state $2$.
+      In fact, since we fix $k=3$, it suffice to specify the number of qubits that are measured to be in state $1$. 
       Let's denote this number by $n$.
       Then, the probability of obtaining the outcome where $n=2$ is the sum of all possible permutations of $(1, 2, 1)$, of which there are $\binom{3}{2}$:
     </p>
@@ -186,7 +186,7 @@
     $$
 
     <p>
-      For the general case of $k$ photons in which $n$ are measured to be in the state $1$, the <i>likelihoods</i> for each class is:
+      For the general case of $k$ qubits in which $n$ are measured to be in the state $1$, the <i>likelihoods</i> for each class is:
     </p>
     $$
       \begin{equation}
@@ -202,8 +202,8 @@
     <h2>Majority Voting</h2>
     <p>
       Suppose $k=3$ and $n=2$. Do we guess $\tilde{\rho}_1$ or $\tilde{\rho}_2$?
-      The majority voting decision rule tells us to pick the class with the most photons in its detection region.
-      Here we have two photons in region 1, and one photon in region 2 - so we guess that the photon is from $\tilde{\rho}_1$.
+      The majority voting decision rule tells us to pick the class which corresponding measurement outcome has the most qubits.
+      Here we have two qubits with outcome $1$ and one qubit with outcome $2$ - so we guess that the qubit is from $\tilde{\rho}_1$.
     </p>
 
     <p>
@@ -221,7 +221,7 @@
     </p>
     
     <p>
-      The first step is to generate a pair of density matrices $\rho_1$ and $\rho_2$ of the form in Eq. 4 and 5 (with $p_1 = p_2 = 0.5%).
+      The first step is to generate a pair of density matrices $\rho_1$ and $\rho_2$ of the form in Eq. 4 and 5 (with $p_1 = p_2 = 0.5$).
       This can be done by first generating two overlapping clusters of pure states, and then applying an unitary transformation to one of the clusters to separate it partially from the other.
       The two clusters may be visualised on a Bloch sphere:
     </p>
@@ -260,21 +260,21 @@
     </figure>
 
     <p>
-      Interestingly, the success probability of the single photon case plateaus at around $0.8$, while that of the optimised measurement continues to increase.
+      Interestingly, the success probability of the single qubit case plateaus at around $0.8$, while that of the optimised measurement continues to increase.
       The reason for this is that there are a number of highly overlapping states in the two clusters.
-      The single qubit Helstrom is very poor at resolving these states, so even with a large number of repeated measurements these states remain difficult to resolve.
+      The single qubit Helstrom measurement is very poor at resolving these states, so even with a large number of repeated measurements these states remain difficult to resolve.
       There's more to this but I have not figured it out.
     </p>
     
     <h2>Likelihood Plots</h2>
     <p>
-      Examining the form of Eq. 12 and 13 we find that each of these distributions are essentially the average of $N$ binomial distribtutions. 
+      Examining the form of Eq. 12 and 13 we find that each of these distributions are essentially the average of $N$ binomial distributions. 
       To get some additional insight as to what the optimisation is doing, we can plot the likelihood functions given by Eq. 12 and 13, as well as the mean of each of their consituent binomial distributions for various $k$.
     </p>
 
     <figure style="text-align: center;">
       <img src="week1-imgs/k19_optimised.png" alt="k19_optimised" width="500" />
-      <figcaption>Figure 5: $k=19$, optimised measurements.</figcaption>
+      <figcaption>Figure 5: $k=19$, optimised measurements (majority voting).</figcaption>
     </figure>
 
     <figure style="text-align: center;">
@@ -284,14 +284,63 @@
 
     <figure style="text-align: center;">
       <img src="week1-imgs/k99_optimised.png" alt="k99_optimised" width="500" />
-      <figcaption>Figure 5: $k=99$, optimised measurements.</figcaption>
+      <figcaption>Figure 7: $k=99$, optimised measurements (majority voting).</figcaption>
     </figure>
 
     <figure style="text-align: center;">
       <img src="week1-imgs/k99_single.png" alt="k99_single" width="500" />
-      <figcaption>Figure 5: $k=99$, single qubit Helstrom measurements.</figcaption>
+      <figcaption>Figure 8: $k=99$, single qubit Helstrom measurements.</figcaption>
     </figure>
 
+    <p>
+      The error probability is one-half the area under the blue distribution that lies the left of the decision boundary,
+      plus one-half the area under the orange distribution that lies to the right of the decision boundary (weighted by the prior probabilities $p_1$ and $p_2$ in the general case).
+    </p>
+    
+    <h2>Maximum Likelihood</h2>
+    <p>
+      Majority voting is not the optimal decision rule as it fixes the decision boundary at $k/2$, thereby reducing some degrees of freedom that the scheme has. 
+      A more flexible alternative is to adopt a maximum likelihood decision rule: 
+      for outcome $n$, we guess that the class is $\tilde{\rho}_1$ if $\mathrm{pr}(n | \tilde{\rho}_1) \gt \mathrm{pr}(n | \tilde{\rho}_2)$, 
+      and $\tilde{\rho}_2$ if $\mathrm{pr}(n | \tilde{\rho}_2) \gt \mathrm{pr}(n | \tilde{\rho}_1)$. 
+      In other words, we pick the class with the higher likelihood of yielding the outcome $n$.
+      Visually, this means that the optimiser now has the freedom to shift the gray decision boundary around, and also to introduce multiple decision boundaries.
+    </p>
+
+    <p>
+      The success probability of the maximum likelihood scheme is given by:
+    </p>
+
+    $$
+      \begin{equation}
+        \mathrm{pr(success)} = \sum_{\substack{\{n: \, \mathrm{pr}(n | \tilde{\rho}_1) \\ \gt \mathrm{pr}(n | \tilde{\rho}_2)\}}} \mathrm{pr}(n | \tilde{\rho}_1) \mathrm{pr}(\tilde{\rho}_1) + 
+                               \sum_{\substack{\{n: \, \mathrm{pr}(n | \tilde{\rho}_2) \\ \gt \mathrm{pr}(n | \tilde{\rho}_1)\}}} \mathrm{pr}(n | \tilde{\rho}_2) \mathrm{pr}(\tilde{\rho}_2)
+      \end{equation}
+    $$
+
+    <p>
+      The same constrained optimisation can be applied to Eq. 15 to solve for the optimal measurements for the maximum likelihood objective.
+      Doing so, we generate the following set of likelihood plots:
+    </p>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/k19_max_likelihood.png" alt="k19_max_likelihood" width="500" />
+      <figcaption>Figure 9: $k=19$, optimised measurements (maximum likelihood).</figcaption>
+    </figure>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/k99_max_likelihood.png" alt="k99_max_likelihood" width="500" />
+      <figcaption>Figure 10: $k=99$, optimised measurements (maximum likelihood).</figcaption>
+    </figure>
+
+    <p>
+      Finally, a comparison of all four aforementioned methods:
+    </p>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/5_success_probabilities_all.png" alt="all_success_probabilities" width="500" />
+      <figcaption>Figure 11: success probabilities for entangled, single qubit, majority voting and maximum likelihood schemes.</figcaption>
+    </figure>
 
 </body>
 </html>
