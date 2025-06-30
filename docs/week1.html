@@ -221,7 +221,7 @@
     </p>
     
     <p>
-      The first step is to generate a pair of density matrices $\rho_1$ and $\rho_2$ of the form in Eq. 4 and 5. 
+      The first step is to generate a pair of density matrices $\rho_1$ and $\rho_2$ of the form in Eq. 4 and 5 (with $p_1 = p_2 = 0.5%).
       This can be done by first generating two overlapping clusters of pure states, and then applying an unitary transformation to one of the clusters to separate it partially from the other.
       The two clusters may be visualised on a Bloch sphere:
     </p>
@@ -230,6 +230,68 @@
       <img src="week1-imgs/1_mixed_states.png" alt="mixed_states" width="400" />
       <figcaption>Figure 1: red: $\rho_1$, gray: $\rho_2$, green: Helstrom measurement</figcaption>
     </figure>
+
+    <p>
+      We then solve for the optimal measurement by optimisation (I am not sure if there is an analytical way to do this). 
+      We set $-\mathrm{pr(success)}$ as the objective to minimise, and impose the constraints that $M_1$ and $M_2$ are positive semidefinite.
+      This is done for different values of $k$, producing a pair of measurement operators $\{M_0, M_1\}$ for each $k$. 
+      The measurement operators may be visualised by plotting the points $(\mathrm{Tr}[\sigma_x M_0], \mathrm{Tr}[\sigma_y M_0], \mathrm{Tr}[\sigma_z M_0])$ and
+      $(\mathrm{Tr}[\sigma_x M_1], \mathrm{Tr}[\sigma_y M_1], \mathrm{Tr}[\sigma_z M_1])$ on the surface of the bloch sphere.
+    </p>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/2_measurement_bloch.png" alt="measurement_bloch" width="400" />
+      <figcaption>Figure 2: optimised measurement bases represented on the Bloch sphere; bright blue corresponds to $k=1$, with redder shades corresponding to larger $k$.</figcaption>
+    </figure>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/3_measurement_projection.png" alt="measurement_projection" width="600" />
+      <figcaption>Figure 3: projections of measurement vectors onto x-y and y-z planes.</figcaption>
+    </figure>
+
+    <p>
+      It is immediately clear from the Bloch sphere picture that the optimal measurements for $k \gt 1$ is not the same as the single qubit Helstrom measurement.
+      The success probabilities for both under majority voting are as follow:
+    </p>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/4_optimal_vs_single_qubit.png" alt="success_probabilities" width="500" />
+      <figcaption>Figure 4: success probabilities for optimised and single qubit measurement operators.</figcaption>
+    </figure>
+
+    <p>
+      Interestingly, the success probability of the single photon case plateaus at around $0.8$, while that of the optimised measurement continues to increase.
+      The reason for this is that there are a number of highly overlapping states in the two clusters.
+      The single qubit Helstrom is very poor at resolving these states, so even with a large number of repeated measurements these states remain difficult to resolve.
+      There's more to this but I have not figured it out.
+    </p>
+    
+    <h2>Likelihood Plots</h2>
+    <p>
+      Examining the form of Eq. 12 and 13 we find that each of these distributions are essentially the average of $N$ binomial distribtutions. 
+      To get some additional insight as to what the optimisation is doing, we can plot the likelihood functions given by Eq. 12 and 13, as well as the mean of each of their consituent binomial distributions for various $k$.
+    </p>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/k19_optimised.png" alt="k19_optimised" width="500" />
+      <figcaption>Figure 5: $k=19$, optimised measurements.</figcaption>
+    </figure>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/k19_single.png" alt="k19_single" width="500" />
+      <figcaption>Figure 6: $k=19$, single qubit Helstrom measurements.</figcaption>
+    </figure>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/k99_optimised.png" alt="k99_optimised" width="500" />
+      <figcaption>Figure 5: $k=99$, optimised measurements.</figcaption>
+    </figure>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/k99_single.png" alt="k99_single" width="500" />
+      <figcaption>Figure 5: $k=99$, single qubit Helstrom measurements.</figcaption>
+    </figure>
+
 
 </body>
 </html>
