@@ -69,7 +69,7 @@
     </p>
     $$
       \begin{equation}
-      p_{s} = \frac{1}{2} + \frac{1}{2}\| \Delta \|_{1}
+      \mathrm{pr(success)} = \frac{1}{2} + \frac{1}{2}\| \Delta \|_{1}
       \end{equation}
     $$
     <p>
@@ -147,12 +147,89 @@
 
     <p>
       The most general measurement are a pair of $2^k \times 2^k$ positive semidefinite operators $\{\tilde{M}_1, \tilde{M}_2\}$ satisfying $\tilde{M}_1 + \tilde{M}_2 = \tilde{I}$.
-      In fact, the optimal measurement is precisely the Helstrom measurement on the tensor product space $\mathcal{H} ^ {\otimes k}$. 
+      In fact, the optimal measurement is precisely the Helstrom measurement on the tensor product space $\mathcal{B} ^ {\otimes k}$. 
       However, this measurement will in general be entangled, and will be challenging to implement experimentally for large $k$.
-      A more practical type of measurements are tensor product measurements of the form $M_{1/2} ^ {\otimes k}$, where $M_{1/2}$ are measurement operators on the single qubit Hilbert space $\mathcal{H}$.
-      
+      A more practical class of measurements are tensor product measurements of the form $M_{s} ^ {\otimes k}$ with $s \in \{1, 2\}$, where $M_{s}$ are local measurement operators on the single qubit Bloch ball $\mathcal{B}$.
+      Since each of the $k$ local measurements can either be $M_1$ or $M_2$, there are in total $2^k$ possible tensor product operators.
+      Together, these operators sum to the identity $\tilde{I}$ on the joint space.
     </p>
 
-  </main>
+    <p>
+      Consider the case $k=3$. 
+      The probability of realising a specific outcome, say $(1, 2, 1)$, given that the qubit is from $\tilde{\rho}_1$ is:
+    </p>
+    $$
+      \begin{align}
+      \mathrm{pr}((1, 2, 1) | \tilde{\rho}_1) 
+      &= \mathrm{Tr}[(M_1 \otimes M_2 \otimes M_1) \tilde{\rho}_1] \\
+      &= \mathrm{Tr}[(M_1 \otimes M_2 \otimes M_1) (\frac{1}{N} \sum_{i=1}^{N} \ket{\psi_i}\bra{\psi_i} ^ {\otimes k})] \\
+      &= \frac{1}{N} \sum_{i=1}^{N} \mathrm{Tr}[M_1 \ket{\psi_i}\bra{\psi_i}] \, \mathrm{Tr}[M_2 \ket{\psi_i}\bra{\psi_i}] \, \mathrm{Tr}[M_1 \ket{\psi_i}\bra{\psi_i}]
+      \end{align}
+    $$
+
+    <p>
+      where Eq. 10 follows from Eq. 9 because $\mathrm{Tr}[(A_1 \otimes B_1)(A_2 \otimes B_2)] = \mathrm{Tr}[A_1 A_2] \, \mathrm{Tr}[B_1 B_2]$.
+    </p>
+
+    <p>
+      The outcome $(1, 2, 1)$ corresponds to the situation where the first, second and third photons yield the outcomes $1$, $2$ and $1$ respectively.
+      In practice however, the identities of the photons and the order of the outcomes will not be known to us.
+      The only information we will have is that there are two photons in region 1 of the detection area, and one photon in region 2 of the detection area.
+      In fact, since we fix $k=3$, it suffice to specify the number of photons that fall within region 1. 
+      Let's denote this number by $n$.
+      Then, the probability of obtaining the outcome where $n=2$ is the sum of all possible permutations of $(1, 2, 1)$, of which there are $\binom{3}{2}$:
+    </p>
+    $$
+      \begin{equation}
+        \mathrm{pr(n=2 | \tilde{\rho}_1)} = \binom{3}{2} \times \frac{1}{N} \sum_{i=1}^{N} \mathrm{Tr}[M_1 \ket{\psi_i}\bra{\psi_i}]^2 \, \mathrm{Tr}[M_2 \ket{\psi_i}\bra{\psi_i}]^{3-2}
+      \end{equation}
+    $$
+
+    <p>
+      For the general case of $k$ photons in which $n$ are measured to be in the state $1$, the <i>likelihoods</i> for each class is:
+    </p>
+    $$
+      \begin{equation}
+        \mathrm{pr(n | \tilde{\rho}_1)} = \binom{k}{n} \times \frac{1}{N} \sum_{i=1}^{N} \mathrm{Tr}[M_1 \ket{\psi_i}\bra{\psi_i}]^n \, \mathrm{Tr}[M_2 \ket{\psi_i}\bra{\psi_i}]^{k-n}
+      \end{equation}
+    $$
+    $$
+      \begin{equation}
+        \mathrm{pr(n | \tilde{\rho}_2)} = \binom{k}{n} \times \frac{1}{N} \sum_{i=1}^{N} \mathrm{Tr}[M_1 \ket{\phi_i}\bra{\phi_i}]^n \, \mathrm{Tr}[M_2 \ket{\phi_i}\bra{\phi_i}]^{k-n}
+      \end{equation}
+    $$
+
+    <h2>Majority Voting</h2>
+    <p>
+      Suppose $k=3$ and $n=2$. Do we guess $\tilde{\rho}_1$ or $\tilde{\rho}_2$?
+      The majority voting decision rule tells us to pick the class with the most photons in its detection region.
+      Here we have two photons in region 1, and one photon in region 2 - so we guess that the photon is from $\tilde{\rho}_1$.
+    </p>
+
+    <p>
+      The success probability of this scheme is:
+    </p>
+    $$
+    \begin{equation}
+      \mathrm{pr(success)} = \sum_{n \gt k} \mathrm{pr}(n | \tilde{\rho}_1) \mathrm{pr}(\tilde{\rho}_1) + 
+                             \sum_{n \lt k} \mathrm{pr}(n | \tilde{\rho}_2) \mathrm{pr}(\tilde{\rho}_2)
+    \end{equation}
+    $$
+
+    <p>
+      The game then is to find the optimal pair of measurement operators $\{M_1, M_2\}$ to maximise the success probability in Eq. 14.
+    </p>
+    
+    <p>
+      The first step is to generate a pair of density matrices $\rho_1$ and $\rho_2$ of the form in Eq. 4 and 5. 
+      This can be done by first generating two overlapping clusters of pure states, and then applying an unitary transformation to one of the clusters to separate it partially from the other.
+      The two clusters may be visualised on a Bloch sphere:
+    </p>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/1_mixed_states.png" alt="mixed_states" width="400" />
+      <figcaption>Figure 1: red: $\rho_1$, gray: $\rho_2$, green: Helstrom measurement</figcaption>
+    </figure>
+
 </body>
 </html>
