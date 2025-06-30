@@ -37,17 +37,47 @@
     <h1>Discriminating Quantum States</h1>
 
     <p>
-        We have two mixed states $\rho_1$ and $\rho_2$, and we sample a single photon from 
-        one of these mixed states. Can we determine which mixed state the photon came from?
+        Given two mixed states $\rho_1$ and $\rho_2$ we sample a single photon from one of them with probabilities $p_1$ and $p_2$. 
+        How do we determine which mixed state the photon came from? 
+    </p>
+    <p>
+      In order to extract information about the photon, we have to measure it in a certain basis. 
+      Say for example that the Hilbert space in question is the photon's polarisation. 
+      We can choose to measure photon's state in the $\{\ket{H}, \ket{V}\}$ basis by passing it through a linear polariser oriented horizontally. 
+      This yields one of two outcomes - the photon is either transmitted ($\ket{H}$) or absorbed ($\ket{V}$). 
+      We then <i>guess</i> that the photon is from $\rho_1$ if the $\ket{H}$ outcome is realised, and from $\rho_2$ if the $\ket{V}$ outcome is realised. 
+      The catch here is that we only have a single photon! 
+      Therefore, we would like to measure in a basis that reveals as much information as possible. 
+      In this case, that means choosing a measurement basis that maximises the success probability of the above scheme. 
+    </p>
+    <p>
+      The optimal measurement for this is the <b>Helstrom measurement</b>, which is constructed as follows:
+    </p>
+    <ol>
+      <li>Diagonalise the operator $\Delta = p_1 \rho_1 - p_2 \rho_2$. Since $\Delta$ is Hermitian, its eigenvectors form an orthonormal basis of the Hilbert space.</li>
+      <li>Group the eigenvectors into two sets: $\{\ket{v_i}\}$ if its eigenvalue is positive, and $\{\ket{w_i}\}$ if its eigenvalue is negative.</li>
+      <li>Construct the operators $P_1 = \sum_{i} \ket{v_i}\bra{v_i}$, $P_2 = \sum_{j} \ket{v_j}\bra{v_j}$. $P_1$ and $P_2$ form a pair of projectors that sum to the identity.</li>
+    </ol>
+    <p>
+      We then perform the measurement described by the PVM $\{P_1, P_2\}$. 
+      If the outcome is $P_1$ we guess that the photon came from $\rho_1$, and if the outcome is $P_2$ we guess that it came from $\rho_2$.
     </p>
 
-    <p>And here's a block equation:</p>
+    <p>
+      For this choice of basis, the success probability is given by the <b>Helstrom bound</b>: 
+    </p>
     $$
-    \nabla \times \vec{B} - \frac{1}{c^2} \frac{\partial \vec{E}}{\partial t} = \mu_0 \vec{J}
+      p_{s} = \frac{1}{2} + \frac{1}{2}\| \Delta \|_{1}
     $$
+    <p>
+      $\| \Delta \|_{1}$ denotes the trace norm of $\Delta$ and is calculated by summing the absolute values of all eigenvalues of $\Delta$.
+    </p>
 
-    <h2>Want to Edit This?</h2>
-    <p>Edit <code>index.html</code> and push changes to update your site live.</p>
+    <h2>Multiple Photons</h2>
+    <p>
+      Now, suppose we are able to sample $k \gt 1$ photons. Will the Helstrom measurement still be optimal? 
+      This is a subtle question, because the answer depends on how the sampling is performed.
+    </p>
   </main>
 </body>
 </html>
