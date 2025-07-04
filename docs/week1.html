@@ -317,18 +317,28 @@
     $$
 
     <p>
-      The same constrained optimisation can be applied to Eq. 15 to solve for the optimal measurements for the maximum likelihood objective.
+      The same constrained optimisation can be applied to Eq. 15 to solve for the optimal measurements for the maximum likelihood objective, but to ensure the solution is indeed optimal we should perform a sweep.
+      Assuming that there is only one decision boundary, the maximum likelihood solution may be obtained by setting the decision boundary at all $k$ possible positions for the $k$ photon case.
+      The maximum likelihood success probability is the maximum probability in the above sweep. 
+      Performing the sweep produces a plot that looks something like this:
+    </p>
+      <figure style="text-align: center;">
+      <img src="week1-imgs/7_max_likelihood_sweep.png" alt="sweep" width="500" />
+      <figcaption>Figure 9: sweep across all decision boundaries; crossed point indicates unsuccessful optimisation, yellow points indicate optimal decision boundaries.</figcaption>
+    </figure>
+    
+    <p>
       Doing so, we generate the following set of likelihood plots:
     </p>
 
     <figure style="text-align: center;">
       <img src="week1-imgs/k19_max_likelihood.png" alt="k19_max_likelihood" width="500" />
-      <figcaption>Figure 9: $k=19$, optimised measurements (maximum likelihood).</figcaption>
+      <figcaption>Figure 10: $k=19$, optimised measurements (maximum likelihood).</figcaption>
     </figure>
 
     <figure style="text-align: center;">
       <img src="week1-imgs/k99_max_likelihood.png" alt="k99_max_likelihood" width="500" />
-      <figcaption>Figure 10: $k=99$, optimised measurements (maximum likelihood).</figcaption>
+      <figcaption>Figure 11: $k=99$, optimised measurements (maximum likelihood).</figcaption>
     </figure>
 
     <p>
@@ -336,8 +346,8 @@
     </p>
 
     <figure style="text-align: center;">
-      <img src="week1-imgs/5_success_probabilities_all.png" alt="all_success_probabilities" width="500" />
-      <figcaption>Figure 11: success probabilities for entangled, single qubit, majority voting and maximum likelihood schemes.</figcaption>
+      <img src="week1-imgs/6_success_probabilities_all_correct.png" alt="all_success_probabilities" width="500" />
+      <figcaption>Figure 12: success probabilities for entangled, single qubit, majority voting and maximum likelihood schemes.</figcaption>
     </figure>
 
 </body>
