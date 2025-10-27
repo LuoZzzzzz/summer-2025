@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Optical Correlator</title>
+
+  <!-- Link external CSS -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- MathJax LaTeX Support -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<body>
+  <header>
+    Summer 2025 - Optical Correlators
+  </header>
+
+  <main>
+    <nav class="page-nav">
+      <a href="index.html" class="btn">Index</a>
+    </nav>
+
+    <h1>Setup</h1>
+    <p>
+      Take a $4f$ system and place a spatial light modulator (SLM) in the Fourier plane. 
+      Consider a single point source. 
+      Light rays from the point source pass through the first lens, becomes a plane wave, gets multiplied by the phase values on the SLM, and then gets Fourier transformed by the second lens.
+      The output is known as the point spread function of the system. 
+    </p>
+    <p>    
+      Now suppose we have an extended image as input. 
+      If the input illumination is coherent, then the output will be a convolution of the input field with an amplitude PSF. 
+      If the input illumination is incoherent, then the output will be a convolution of the input intensity with an intensity PSF. 
+      The pixelated nature and finite width of the SLM will introduce various artifacts to the output pattern. 
+      Below is a simplified explanation for some of them.
+    </p>
+
+    <h2>Definitions</h2>
+    <p>
+      We will need some basic definitions and Fourier transform results.
+    </p>
+
+    <p>
+      Dirac comb:
+    </p>
+    $$
+      \operatorname{I\!I\!I}_T(x) = \sum_{n=-\infty}^{\infty} \delta(x-nT)
+    $$
+
+    <p>
+      Tophat:
+    </p>
+    $$
+      \operatorname{rect}(x) =
+      \begin{cases}
+      1 & \text{if } |x| \le \frac{1}{2} \\
+      0 & \text{otherwise}
+      \end{cases}
+    $$
+
+    <p>
+      Fourier transform of Dirac comb:
+    </p>
+    $$
+      \mathcal{F} \{ \operatorname{I\!I\!I}_T(x)) \} = \operatorname{I\!I\!I}_{\frac{1}{T}}(x)
+    $$
+
+    
+    <p>
+      Fourier transform of tophat:
+    </p>
+    $$
+      \mathcal{F} \{ \operatorname{rect}(\frac{x}{W}) \} = W\operatorname{sinc}(Wx)
+    $$
+
+    <h2>Mathematics</h2>
+    <p>
+      The phase pattern on the SLM is:
+    </p>
+    $$
+      \operatorname{rect}(\frac{x}{W}) \cdot [(f(x) \cdot \operatorname{I\!I\!I}_d(x)) \star \operatorname{rect}(\frac{x}{d})]
+    $$
+    
+    <p>
+      where $f(x)$ is some nice smooth function.
+    </p>
+
+    <p>
+      The Fourier transform of this is: 
+    </p>
+    $$
+      \mathcal{F} \{ \operatorname{rect}(\frac{x}{W}) \} \star [(\mathcal{F} \{ f(x) \} \star \mathcal{F} \{ \operatorname{I\!I\!I}_d(x) \}) \cdot \mathcal{F} \{ \operatorname{rect}(\frac{x}{d}) \}]
+    $$
+    
+    <p>
+    Using some standard Fourier transform results this becomes:
+    </p>
+    $$
+      W\operatorname{sinc}(Wk) \star [(\mathcal{F} \{ f(x) \} \star \operatorname {I\!I\!I}_{1/d}(k)) \cdot d\operatorname{sinc}(dk)]
+    $$
+
+    <p>
+    Now let's look at the various length scales involved. $W$, the width of the SLM is large. 
+    $d$, the pixel pitch of the SLM is small. If the SLM had been smooth then ideally we will end up with just $\mathcal{F} \{ f(x) \} [k]$. 
+    Unfortunately, it is pixelated, which introduces a few artifacts. 
+    </p>
+
+    <p>
+    The first artifact is a convolution with $\operatorname {I\!I\!I}_{1/d}(k)$. 
+    This introduces various "ghost" copies of the original kernel image. Because $d$ is quite small, $\frac{1}{d}$ will be quite large and the islands should be relatively far apart. 
+    The second artifact is a $\operatorname{sinc}(dk)$ envelope - this leads to a reduction in intensity towards the sides of the detection plane. 
+    Both of these artifacts are due to the sampling like nature of the pixelated SLM pattern.
+    </p>
+
+    <p>
+    The final artifact is a convolution of everything before with a $\operatorname{sinc}(Wk)$ function. 
+    Since $W$ is large this should be a relatively narrow function. 
+    Intuitively, the finite size of the SLM means that there is a maximum "standing wave wavelength" ($W$) that can be fit on the SLM. 
+    This in turn means that there is a minimum "frequency resolution" on the detection plane ($\frac{1}{W}$). 
+    So we should expect blurring on the length scale of $\frac{1}{W}$ (in $k$ space, to convert to physical length we multiply by $\frac{\lambda z}{2\pi}$), which is exactly what the convolution here is doing. 
+    </p>
+
+    <h2>Practical Considerations</h2>
+    <p>
+      When we optimise the network on a computer, the amplitudes are represented in the form of arrays. 
+      The array representing the field on the SLM plane is $[f_0, f_1, \dots, f_{n-1}]$ where $f_n = f(\frac{nL}{N})$. What is the DFT of this array? 
+      The reason we ask this is that we use DFT to propagate the field from the SLM plane to the camera plane. 
+      Some of the above artifacts will already introduced by the DFT (hence accounted for when we perform backpropagation on the DFT output), while there might be other artifacts that we need to manually include. 
+    <p>
+
+    <p>
+      The DFT of a signal $f(x)$ sampled at discrete points $0, \frac{L}{N}, \dots \frac{(N-1)L}{N}$ is:
+    <p>
+    $$
+      \tilde{f}_m = \sum_{n=0}^{N-1} f_n e^{-2\pi i \frac{mn}{N}}
+    $$
+    <p>
+      where $m = 0, 1, 2, \dots$ is the mode index.
+    </p>
+    
+    <p>
+      We can convert this to integral form:
+    </p>
+    $$
+      \tilde{f}_m = \int_{0}^{L} (\sum_{n=0}^{N-1} f(x) \delta(x-\frac{nL}{N})) e^{-2\pi i mx / L} dx
+    $$
+
+    <p>
+      where $x = \frac{nL}{N}$.
+    </p>
+
+    <p>
+      But this is really just $\mathcal{F} \{ \operatorname{rect}(\frac{x}{L}) \cdot [(f(x) \cdot \operatorname{I\!I\!I}_{\frac{L}{N}}(x)] \} = L \operatorname{sinc}(Lk) \star (\mathcal{F} \{ f(x) \} \star \operatorname{I\!I\!I}_{\frac{N}{L}}(k))$ where $k = \frac{2\pi m}{L}$. 
+      Now noting that $d = \frac{L}{N}$ we see that artifacts 1 and 3 are already accounted for in the DFT (at least at the grid points on the output that is within the DFT range; also the pattern might interpolate in between grid points in strange ways). 
+      The only unaccounted feature is the $\operatorname{sinc}(dk)$ envelope, which arises from the width of the SLM pixels. 
+      However, this artifact does not really affect the resolution of the kernel pattern, so we should be able to ignore it. 
+    </p>
+
+    <h2>Grid Point to Spatial Distance Conversion</h2>
+    <p>
+      The spatial distance between adjacent points in the $[f_0, f_1, \dots, f_{n-1}]$ array is just the pixel pitch $d$. 
+      What is the spatial distance between adjacent points in the DFT array $[\tilde{f}_0, \tilde{f}_1, \dots, \tilde{f}_{n-1}]$? 
+      To answer this, we note that 1. a lens Fourier transform maps a spatial frequency $\nu$ in the object plane to the position $X$ on the output plane given by $\nu = \frac{k}{2\pi} = \frac{X}{\lambda z}$, where $z$ is the focal length of the lens, and 2. the frequency separation between adjacent modes is $\Delta k = \frac{2\pi}{W}$. 
+      Putting these together gives $\Delta \nu = \frac{\Delta X}{\lambda z} \implies \Delta X = \frac{\lambda z}{W}$. 
+      This means that the physical length of the Fourier transform on the output plane should be around $X_{\mathrm{max}} = N \Delta X = \frac{N \lambda z}{W} = \frac{\lambda z}{d}$ since $W = Nd$.
+    </p>
+
+    <p>
+      The radius of the blurring $\operatorname{sinc}$ pattern is given by $Wk = \pi$. 
+      Converting this to spatial coordinates gives $X_{\mathrm{blur}} = \frac{\lambda z}{2 W}$. 
+      The resolution is limited by the ratio $\frac{X_\mathrm{max}}{2 X_{\mathrm{blur}}} = \frac{W}{d} = N$, which is the number of pixels on the SLM. 
+    </p>
+
+  </main>
+</body>
+</html>

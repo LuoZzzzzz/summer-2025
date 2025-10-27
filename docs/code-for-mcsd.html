@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Optimisation for Multicopy States</title>
+
+  <!-- Link external CSS -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- MathJax LaTeX Support -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<body>
+  <header>
+    Summer 2025 - Optimisation for Multicopy States
+  </header>
+
+  <main>
+    <nav class="page-nav">
+      <a href="index.html" class="btn">Index</a>
+    </nav>
+
+    <h1>Multicopy state discrimination</h1>
+    <p>
+      A quantum POVM (positive operator valued measure) is a set of positive semidefinite matrices that sum to
+      the identity. In the context of quantum state discrimination, the goal is to find a POVM that distinguishes
+      two our more ensembles of quantum states with the minimum error rate. 
+    </p>
+
+    <h2>Objective function</h2>
+    <p>
+      Lets adopt the following notation: 
+    </p>
+
+    <ol>
+      <li>$A$, $B$, $C$: classes to discriminate, in general $N$</li>
+      <li>$\ket{A_j}$: instance $j$ of class $A$, $j \in [1, B]$</li>
+      <li>$E_i$: element $i$ of POVM, $i \in [1, M]$</li>
+    </ol>
+
+    <p>
+      As before, the probability that any given example $\ket{A_j}$ collapses onto the measurement $E_i$ is: 
+      $p_{A_j \rightarrow i} = \text{Tr}[E_i \ket{A_j}\bra{A_j}]$. 
+      For a single copy of a single instance $\ket{A_j}\bra{A_j}$ we then have the probability distribution 
+      $p_{A_j  \rightarrow i}$ for $i \in [1, M]$ where $M$ is the number of measurements in our POVM.
+    </p>
+
+    <p>
+      Now, if we have $k$ copies $\ket{A_j}\bra{A_j} ^ {\otimes k}$ and we use the same POVM on each copy (local measurements) 
+      then the resulting distribution is going to be multinomial. Let's take a concrete example. Suppose $k = 2$, and $M = 3$. 
+      Then the possible outcomes are: 
+      $$(2, 0, 0),\, (0, 2, 0),\, (0, 0, 2),\, (1, 1, 0),\, (1, 0, 1),\, (0, 1, 1)$$
+      where $(2, 0, 0)$ for example means that two photons are registered by measurement $E_1$, and none by measurements $E_2$ and $E_3$. 
+      The probabilities associated with each of these outcomes are given by the multinomial distribution:
+      $$\text{Mult}(p_{A_j  \rightarrow 1}, p_{A_j  \rightarrow 2}, p_{A_j  \rightarrow 3}) = \frac{3!}{x_1! x_2!x_3!} \prod_{i=1}^{3} p_{A_j  \rightarrow i}^{x_i}$$
+      for all $x_1, x_2, x_3 > 0$ and $x_1 + x_2 + x_3 = 3$. 
+    </p>
+
+    <p>
+      The above is for a single example. If we had a whole bunch of examples in our class, 
+      then the probability distribution for the entire class will be the sum of all the individual multinomial distributions:
+      $$\text{Dist}_A(x_1, x_2, x_3) = \frac{1}{B} \sum_{j=1}^{B} \text{Mult}(p_{A_j  \rightarrow 1}, p_{A_j  \rightarrow 2}, p_{A_j  \rightarrow 3})$$
+      The same distributions may be constructed for classes $B$ and $C$. 
+      Once we have $\text{Dist}_A(x_1, x_2, x_3)$,  $\text{Dist}_B(x_1, x_2, x_3)$, $\text{Dist}_C(x_1, x_2, x_3)$, 
+      the next step is to figure out a way of assigning outcomes to classes. 
+      Let us assume equal priors. Then the best we can do is to assign an outcome to the class with the highest corresponding likelihood. 
+    </p>
+
+    <p>
+      One way we can think about this is to stack $\text{Dist}_A(x_1, x_2, x_3)$,  $\text{Dist}_B(x_1, x_2, x_3)$, $\text{Dist}_C(x_1, x_2, x_3)$ 
+      on top of each other to create a $3$ by $6$ matrix (in general $N$ by $\binom{k + M - 1}{k - 1}$). 
+      Rows of this matrix sum to one by construction. Each column of the matrix give likelihood of that outcome for different classes. 
+      We assign the outcome of each column to the class with the highest likelihood. This is the maximum a posteriori (MAP) approach. 
+      Summing together the maximum values in each of the columns (and multiplying by $1/N$ gives the optimal success probabilities for a given POVM. 
+      This is our objective.
+    </p>
+  
+    <h2>Parameterisation of POVM (NOT DONN!)</h2>
+    <p>
+      Naively, we would perform the above optimisation by optimising the matrix elements of the POVM while 
+      enforcing the constraint the $\sum_{m} E_m = I$. This is, however, rather inefficient as the constraints
+      require us to construct large auxiliary constraint matrices. It turns out that we can turn the problem
+      into an unconstrained optimisation (ie. gradient descent) using a clever parameterisation. The recipe is
+      as follow:
+    </p>
+
+    <ol>
+      <li>Generate a set of $M$ Hermitian matrices $\{ H_m \}$. These are our base parameters.</li>
+      <li>Subtract $\text{Tr}[H_m] I$ from each $H_m$ to generate a set of traceless Hermitian matrices, $\{ \tilde{H}_m \}$.</li>
+      <li>Exponentiate ${\tilde{H}_m}$. This generates a set of positive semidefinite matrices $\{ A_m \}$.</li>
+      <li>Compute $S = \sum_{m} A_m$.</li>
+      <li>Compute $\{ E_m \} = \{ S^{-1/2} A_m S^{-1/2} \}$. $E_m$ is a valid POVM.</li>
+    </ol>
+
+    <p>
+      The rationale behind step $2$ is that matrix exponentiation, up to a multiplicative constant, is non-unique. 
+      Two different Hermitian matrices differing by some multiple of the identity (ie. $H$ versus $H+aI$), when exponentiated
+      produces positive semidefinite $A$s that are multiples of each other (ie. $A$ versus $e^a A$). This means that
+      the final POVM produced will be identical, even though the base parameters are different! 
+      There is nothing wrong with this - both parameterisations are equally valid, but such degeneracies may present
+      challenges for gradient descent as it leads to large, flat regions in the loss landscape that may slow convergence.
+      This issue can be removed by enforcing our base matrices to be traceless, which restricts us 
+      to the subspace of all traceless Hermitian matrices and makes the mapping between ${\tilde{H}_m}$ and $\{ E_m \}$
+      less degenerate. 
+    </p>
+
+    <p>
+      The claim in step $3$ may be proven by noting that an eigenvector of $H$, $\ket{\psi}$ with eigenvalue $\lambda$
+      is also an eigenvector of $e^H$ with eigenvalue $e^\lambda$. Since, $H$ is Hermitian, its eigenvalues of real,
+      which means that all eigenvalues of $e^H$ are positive, thereby making it positive semidefinite. 
+    </p>
+
+    <p>
+      The procedure in step $5$ is called a matrix softmax. To see how it works, note that:
+      $\sum_m S^{-1/2} \, A_m \, S^{-1/2} = S^{-1/2} \, (\sum_m A_m) \, S^{-1/2} = S^{-1/2} \, S \, S^{-1/2} = I$.
+      $S^{-1/2} \, S \, S^{-1/2} = I$ is true because $S$, being the sum of a bunch of Hermitian matrices 
+      (yes, $e^H$ is Hermitian) is also Hermitian. Therefore, if $S = Q \, \text{diag}(\lambda_1, \dots, \lambda_d) \, Q^t$
+      then $S^{-1/2} = Q \, \text{diag}(\sqrt{\lambda_1}, \dots, \sqrt{\lambda_d}) \, Q^t$. So 
+      $S^{-1/2} \, S \, S^{-1/2} = Q \, \text{diag} \, (\sqrt{\lambda_1}, \dots, \sqrt{\lambda_d}) \, Q^t \, 
+      Q \, \text{diag}(\lambda_1, \dots, \lambda_d) \, Q^t \,  
+      Q \, \text{diag}(\sqrt{\lambda_1}, \dots, \sqrt{\lambda_d}) \, Q^t 
+      = I$.
+    </p>
+
+    
+
+  </main>
+</body>
+</html>

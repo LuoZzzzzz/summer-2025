@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Summer 2025 - Week 3</title>
+
+  <!-- Link external CSS -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- MathJax LaTeX Support -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<body>
+  <header>
+    Summer 2025 - Week 3
+  </header>
+
+  <main>
+    <nav class="page-nav">
+      <a href="index.html" class="btn">Index</a> | 
+      <a href="week2.html" class="btn">Prev</a> | 
+      <a href="week4.html" class="btn">Next</a>
+    </nav>
+
+    <h1>Classification by Mode Sorting</h1>
+
+    <p>
+      This week we try to implement the mode sorting scheme from week 2. 
+    </p>
+
+    <h2>Convex Optimisation</h2>
+    <p>
+      The FMNIST images used in the experiment are 100 by 100, which means that the density matrices and measurement operators involved are 10000 by 10000.
+      Running a convex optimisation (for the POVM) on such a scale is impossible.
+    </p>
+
+    <p>
+      To work around this, we try to find an approximate solution.
+      We downsample the images to 20 by 20 first, and then optimise 400 by 400 measurement matrices to find an optimal POVM for the 20 by 20 images. 
+      Then, we extract the relevant eigenvectors and upsample them to 100 by 100 using some form of interpolation (in this case we use LANCZOS4). 
+      Finally, we orthogonalise the upsampled eigenvectors using the polar decomposition outlined in the previous week. 
+    </p>
+
+    <figure style="text-align: center;">
+      <img src="week3-imgs/shirt_projector.png" alt="shirt_projector" width="300">
+      <figcaption>Figure 1: Upsampled shirt mode (after orthogonalisation)</figcaption>
+    </figure>
+
+    <h2>Selecting Eigenmodes</h2>
+    <p>
+      Now that we have a set of orthogonal modes from the various PVM measurements, we need to get the diffractive network to map them to different detection regions.
+      Naively we will train the diffractive network directly on the full set of modes. 
+      This will not work in practice as the diffractive network is not flexible enough to implement any arbitrary unitary mapping. 
+      If we had trained it on all eigenmodes then the network will end up performing poorly on all of them, and the classification results on actual images will be rather poor. 
+      Instead, we should concentrate training on the modes that have the greatest presence across the images in the dataset.
+    </p>
+
+    <p>
+      How can we determine the importance of an eigenmode? 
+      It turns out that modes with high eigenvalues in the POVM's spectral decomposition will tend to have a greater presence in the dataset. 
+      Now what makes a mode discriminative?
+      Intuitively, there are two features that come to mind. 
+    </p>
+
+    <ol>
+      <li>It should give large projections for images of its corresponding class, and small projections for images from other classes.</li>
+      <li>It should be present in as many images of its class as possible.</li>
+    </ol>
+
+    <p>
+      There is in some sense a trade-off between the above two qualities - a mode that is more frequent across say all shirts will also tend to overlap more with pants, shoes, etc... which makes it less discriminative.
+      The Helstrom measurement tries to find a trade-off between them.
+      Now, what has this got to do with the eigenvalue in the spectral decomposition of a measurement operator?
+      Recall that the success probability of a measurement is given by $\mathrm{Tr}[M_i \rho_i]$. This can be rewritten as $\sum_j \lambda_{ij} \mathrm{Tr}[\ket{i_j}\bra{i_j}\rho_1]$, where $M_i = \sum_j \lambda_{ij} \ket{i_j}\bra{i_j}$.
+      So we see that the modes with larger eigenvalues $\lambda_{ij}$ contributes more to the success probability of that particular class. 
+      This means that larger eigenvalues will tends to correlate with higher prevalence in across the dataset.
+    </p>
+
+    <p>
+      We can confirm our intuition by plotting projections of each class (averaged across training examples) onto each mode. 
+      This give the following plots:
+    </p>
+
+    <figure style="text-align: center;">
+      <img src="week3-imgs/class_projections.png" alt="class_projections" width="650">
+      <figcaption>Figure 2: Projections of each class onto full set of PVM modes. Notice that the modes associated with the given class (highlighted in gray) have the highest projection.</figcaption>
+    </figure>
+
+    <figure style="text-align: center;">
+      <img src="week3-imgs/dataset_projections.png" alt="dataset_projections" width="400">
+      <figcaption>Figure 3: Projection of entire dataset onto full set of PVM modes.</figcaption>
+    </figure>
+
+    <p>
+      Anyways, this means that we can do the following:
+    </p>
+
+    <ol>
+      <li>Form the PVM from 20 by 20 POVMs.</li>
+      <li>Extract eigenvectors of each PVM that have eigenvalues above a certain threshold.</li>
+      <li>Orthogonalise these eigenvectors using polar decompositon.</li>
+      <li>Calculate the projection of the entire dataset onto each of these eigenvectors.</li>
+      <li>Weigh the number of times a mode appears in the training set based on these projections.</li>
+    </ol>
+
+    <p>
+      The reason we perform step 2. is so that the orthogonalisation in 3. does not involve too many eigenvectors - that could be unstable. 
+      So we can think of step 2. as filtering out potential candidates for good modes to sort, and step 4. as the actual evaluation of whether the mode is good.
+    </p>
+
+    <h2>Tuning</h2>
+    <p>
+      A simple way to map projections to freqeuncies is to multiply the projections by say, 10, and then round off the results. 
+      This will give a large number of modes with frequency 1, some with frequency 2, and so on.
+      It turns out that for each class, there will be one mode for which the frequency is much higher than the rest. 
+    </p> 
+
+    <p>
+      Even after weighing the training set by the frequency of the modes, the final accuracy is not optimal. 
+      One way that we can improve the accuracy is to further filter out modes with frequency (in the training set) less than 2, less than 3, and so on.
+      Of course, this means that the modes become less representative of the full range of images in the dataset. 
+      To visualise this, we can reconstruct a given image from its projections onto the full set of selected modes, for different mode frequency cutoffs.
+      Here it is for just the top 10 most frequent modes:
+    </p>
+
+    <div style="display: flex; justify-content: center; gap: 20px;">
+      <figure style="text-align: center;">
+        <img src="week3-imgs/original_shirt.png" alt="original_shirt" width="300">
+        <figcaption>Figure 4: Instance of an original shirt from the dataset.</figcaption>
+      </figure>
+
+      <figure style="text-align: center;">
+        <img src="week3-imgs/reconstructed_shirt.png" alt="reconstructed_shirt" width="300">
+        <figcaption>Figure 5: Shirt above reconstructed by summing projections onto top 10 most frequent modes in the PVM.</figcaption>
+      </figure>
+    </div>
+    
+    <p>
+      In the example above, whatever difference in amplitude between the original image and its reconstruction will just be randomly scattered across the detection plane.
+    </p>
+
+    <p>
+      After some trial and error, it seems that the best choice of modes is to use just one mode for each class (in fact, I wonder if there is a nice solution to the optimal PVM if we restrict to just rank 1 projectors). 
+      Here they are:
+    </p>
+
+    <figure style="text-align: center;">
+      <img src="week3-imgs/top_10_modes.png" alt="top_10_modes" width="600">
+      <figcaption>Figure 6: Top 10 most frequent modes in the PVM basis.</figcaption>
+    </figure>
+
+    <p>
+      We can also plot out some of the less prevalent modes:
+    </p>
+    
+    <figure style="text-align: center;">
+      <img src="week3-imgs/least_prevalent_modes.png" alt="least_prevalent_modes" width="600">
+      <figcaption>Figure 7: Less frequent modes in the PVM basis.</figcaption>
+    </figure>
+
+    <p>
+      This is quite insightful. 
+      For example, the most prevalent shirt mode is clearly trying to detect "short" sleeves, and discriminating against longer sleeved sweaters.
+      On the other hand, the low eigenvalue modes tend to have increasingly fine spatial features - this is expected, as after all the complete set of modes must form a basis for all possible images and that includes images with high spatial freqeuncies.
+    </p>
+
+    <h2>Training</h2>
+    <p>
+      Next, we take the training set and train the mode sorter. 
+      Pretty boring. The final classification accuracy is 23.5%.
+    </p>
+
+    <div style="display: flex; justify-content: center; gap: 0px;">
+      <figure style="text-align: center;">
+        <img src="week3-imgs/shirt_mode.png" alt="shirt_mode" width="300">
+        <figcaption>Figure 8: A shirt mode.</figcaption>
+      </figure>
+
+      <figure style="text-align: center;">
+        <img src="week3-imgs/shirt_mode_output.png" alt="shirt_mode_output" width="300">
+        <figcaption>Figure 9: Shirt mode after diffractive network.</figcaption>
+      </figure>
+    </div>
+
+    <div style="display: flex; justify-content: center; gap: 0px;">
+      <figure style="text-align: center;">
+        <img src="week3-imgs/pants_mode.png" alt="pants_mode" width="300">
+        <figcaption>Figure 10: A pants mode.</figcaption>
+      </figure>
+
+      <figure style="text-align: center;">
+        <img src="week3-imgs/pants_mode_output.png" alt="pants_mode_output" width="300">
+        <figcaption>Figure 11: Pants mode after diffractive network.</figcaption>
+      </figure>
+    </div>
+
+    <figure style="text-align: center;">
+      <img src="week3-imgs/detection_regions.png" alt="detection_regions" width="600">
+      <figcaption>Figure 12: Detection regions for each class on final detector layer of the diffractive network.</figcaption>
+    </figure>
+
+
+    <h2>Comparison with Direct Backprop</h2>
+    <p>
+      The straightforward way to train the diffractive network is, of course, to just get it to minimise the overlap between the output distributions of different classes.
+      This method gives an accuracy of about 23%, which is very similar to mode sorting.
+      In fact, the detection regions of the two methods are virtually identical, which leads one to suspect that optimisation + mode sorting and direct backpropagtion are trying to implement the same measurements.
+    </p>
+
+    <p>
+      The original motivation behind the mode sorting business is that direct backprop, being a local optimisation method, may not be able to find the optimal measurement when subject to the additional physical constraints of a three layer diffractive network.
+      On the other hand, the mode sorting method begins with a convex optimisation that finds the global optimum solution, and then works from there, so intuitively it will lead to a more optimal solution - provided of course, that the measurement can actually be paramterised onto the diffractive network.
+      Given both methods still seem to converge to the same set of mappings, this strongly suggests that the bottleneck here is not with local minima, but with the flexibility of the diffractive network.
+    </p>
+
+  </main>
+</body>
+</html>

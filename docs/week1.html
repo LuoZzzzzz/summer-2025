@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Summer 2025 - Week 1</title>
+
+  <!-- Link external CSS -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- MathJax LaTeX Support -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        tags: 'all'  // Enable automatic equation numbering
+      }
+    };
+  </script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<body>
+  <header>
+    Summer 2025 - Week 1
+  </header>
+
+  <main>
+    <nav class="page-nav">
+      <a href="index.html" class="btn">Index</a> | 
+      <a href="week2.html" class="btn">Next</a>
+    </nav>
+
+    <h1>Discriminating Quantum States</h1>
+
+    <p>
+        Given two mixed states $\rho_1$ and $\rho_2$ we sample a single photon from one of them with prior probabilities $p_1$ and $p_2$. 
+        How do we determine which mixed state the photon came from? 
+    </p>
+    <p>
+      In order to extract information about the photon, we have to measure it in a certain basis. 
+      Say for example that the Hilbert space in question is the photon's polarisation. 
+      We can choose to measure photon's state in the $\{\ket{H}, \ket{V}\}$ basis by passing it through a linear polariser oriented horizontally. 
+      This yields one of two outcomes - the photon is either transmitted ($\ket{H}$) or absorbed ($\ket{V}$). 
+      We then <i>guess</i> that the photon is from $\rho_1$ if the $\ket{H}$ outcome is realised, and from $\rho_2$ if the $\ket{V}$ outcome is realised. 
+      The catch here is that we only have a single photon! 
+      Therefore, we would like to measure in a basis that reveals as much information as possible. 
+      In this case, that means choosing a measurement basis that maximises the success probability of the above scheme. 
+    </p>
+    <p>
+      The optimal measurement for this is the <b>Helstrom measurement</b>, which is constructed as follows:
+    </p>
+    <ol>
+      <li>Diagonalise the operator $\Delta = p_1 \rho_1 - p_2 \rho_2$. Since $\Delta$ is Hermitian, its eigenvectors form an orthonormal basis of the Hilbert space.</li>
+      <li>Group the eigenvectors into two sets: $\{\ket{v_i}\}$ if its eigenvalue is positive, and $\{\ket{w_i}\}$ if its eigenvalue is negative.</li>
+      <li>Construct the operators $P_1 = \sum_{i} \ket{v_i}\bra{v_i}$, $P_2 = \sum_{j} \ket{w_j}\bra{w_j}$. $P_1$ and $P_2$ form a pair of projectors that sum to the identity.</li>
+    </ol>
+    <p>
+      We then perform the measurement described by the PVM $\{P_1, P_2\}$. 
+      If the outcome is $P_1$ we guess that the photon came from $\rho_1$, and if the outcome is $P_2$ we guess that it came from $\rho_2$.
+    </p>
+
+    <p>
+      For this choice of basis, the success probability is given by the <b>Helstrom bound</b>: 
+    </p>
+    $$
+      \begin{equation}
+      \mathrm{pr(success)} = \frac{1}{2} + \frac{1}{2}\| \Delta \|_{1}
+      \end{equation}
+    $$
+    <p>
+      $\| \Delta \|_{1}$ denotes the trace norm of $\Delta$ and is calculated by summing the absolute values of all eigenvalues of $\Delta$.
+    </p>
+
+    <h2>Multiple Photons</h2>
+    <p>
+      Now, suppose we are able to sample $k \gt 1$ photons. Will the Helstrom measurement still be optimal? 
+      This is a subtle question, because the answer depends on how the sampling is performed.
+      For example, we could sample repeatedly from the density matrix $\rho_1$. 
+      Although we have fixed $\rho_1$, each individual photon may belong to a different pure state.
+      Alternatively, we may select $\rho_1$, and then select a random a pure state in $\rho_1$ and sample $k$ photons from that pure state.
+      The difference between the two cases becomes clear when we write out the density matrices representing the joint state of the $k$ photons.
+    </p>
+
+    <p>
+      In the former case we are sampling from: 
+    </p>
+    $$
+      \begin{equation}
+      \tilde{\rho}_1 = \rho_1^{\otimes k}
+      \end{equation}
+    $$
+
+    <p>
+      While in the latter case are sampling from: 
+    </p>
+    $$
+      \begin{equation}
+      \tilde{\rho}_1 = \sum_{i=1}^N p_i \ket{\psi_i}\bra{\psi_i}^{\otimes k}
+      \end{equation}
+    $$
+
+    <p>
+      The latter sampling procedure makes much more sense in the context of a classification task .
+      For example, if the $k$ photons had originated from an image, it is likely that the image remains relatively unchanged over duration over which the $k$ photons are produced.
+      This raises the following question: what is the optimal measurement basis for discriminating $\tilde{\rho}_1$ and $\tilde{\rho}_2$ in Eq. 3?
+    </p>
+
+    <h2>Discriminating Qubits</h2>
+    <p>
+      Let us consider two mixed states $\rho_1$ and $\rho_2$, each containing $N$ qubits: 
+    </p>
+    $$
+      \begin{equation}
+      \rho_1 = \frac{1}{N} \sum_{i=1}^{N} \ket{\psi_i}\bra{\psi_i}
+      \end{equation}
+    $$
+    $$
+      \begin{equation}
+      \rho_2 = \frac{1}{N} \sum_{j=1}^{N} \ket{\phi_j}\bra{\phi_j}
+      \end{equation}
+    $$
+
+    <p>
+      The joint state of $k$ sampled qubits are then described by the operators:
+    </p>
+        $$
+      \begin{equation}
+      \tilde{\rho}_1 = \frac{1}{N} \sum_{i=1}^{N} \ket{\psi_i}\bra{\psi_i} ^ {\otimes k}
+      \end{equation}
+    $$
+    $$
+      \begin{equation}
+      \tilde{\rho}_2 = \frac{1}{N} \sum_{j=1}^{N} \ket{\phi_j}\bra{\phi_j} ^ {\otimes k}
+      \end{equation}
+    $$
+
+    <p>
+      We use qubits here as they can be visualised intuitively on the Bloch sphere - this makes the geometry of the results clear.
+    </p>
+
+    <p>
+      The most general measurement are a pair of $2^k \times 2^k$ positive semidefinite operators $\{\tilde{M}_1, \tilde{M}_2\}$ satisfying $\tilde{M}_1 + \tilde{M}_2 = \tilde{I}$.
+      In fact, the optimal measurement is precisely the Helstrom measurement on the tensor product space $\mathcal{B} ^ {\otimes k}$. 
+      However, this measurement will in general be entangled, and will be challenging to implement experimentally for large $k$.
+      A more practical class of measurements are tensor product measurements of the form $M_{s} ^ {\otimes k}$ with $s \in \{1, 2\}$, where $M_{s}$ are local measurement operators on the single qubit Bloch ball $\mathcal{B}$.
+      Since each of the $k$ local measurements can either be $M_1$ or $M_2$, there are in total $2^k$ possible tensor product operators.
+      Together, these operators sum to the identity $\tilde{I}$ on the joint space.
+    </p>
+
+    <p>
+      Consider the case $k=3$. 
+      The probability of realising a specific outcome, say $(1, 2, 1)$, given that the qubit is from $\tilde{\rho}_1$ is:
+    </p>
+    $$
+      \begin{align}
+      \mathrm{pr}((1, 2, 1) | \tilde{\rho}_1) 
+      &= \mathrm{Tr}[(M_1 \otimes M_2 \otimes M_1) \tilde{\rho}_1] \\
+      &= \mathrm{Tr}[(M_1 \otimes M_2 \otimes M_1) (\frac{1}{N} \sum_{i=1}^{N} \ket{\psi_i}\bra{\psi_i} ^ {\otimes k})] \\
+      &= \frac{1}{N} \sum_{i=1}^{N} \mathrm{Tr}[M_1 \ket{\psi_i}\bra{\psi_i}] \, \mathrm{Tr}[M_2 \ket{\psi_i}\bra{\psi_i}] \, \mathrm{Tr}[M_1 \ket{\psi_i}\bra{\psi_i}]
+      \end{align}
+    $$
+
+    <p>
+      where Eq. 10 follows from Eq. 9 because $\mathrm{Tr}[(A_1 \otimes B_1)(A_2 \otimes B_2)] = \mathrm{Tr}[A_1 A_2] \, \mathrm{Tr}[B_1 B_2]$.
+    </p>
+
+    <p>
+      The outcome $(1, 2, 1)$ corresponds to the situation where the first, second and third qubits yield the outcomes $1$, $2$ and $1$ respectively.
+      In practice however, the identities of the qubits and the order of the outcomes will not be known to us.
+      The only information we will have is that there are two qubits in state $1$ and one qubit in state $2$.
+      In fact, since we fix $k=3$, it suffice to specify the number of qubits that are measured to be in state $1$. 
+      Let's denote this number by $n$.
+      Then, the probability of obtaining the outcome where $n=2$ is the sum of all possible permutations of $(1, 2, 1)$, of which there are $\binom{3}{2}$:
+    </p>
+    $$
+      \begin{equation}
+        \mathrm{pr(n=2 | \tilde{\rho}_1)} = \binom{3}{2} \times \frac{1}{N} \sum_{i=1}^{N} \mathrm{Tr}[M_1 \ket{\psi_i}\bra{\psi_i}]^2 \, \mathrm{Tr}[M_2 \ket{\psi_i}\bra{\psi_i}]^{3-2}
+      \end{equation}
+    $$
+
+    <p>
+      For the general case of $k$ qubits in which $n$ are measured to be in the state $1$, the <i>likelihoods</i> for each class is:
+    </p>
+    $$
+      \begin{equation}
+        \mathrm{pr(n | \tilde{\rho}_1)} = \binom{k}{n} \times \frac{1}{N} \sum_{i=1}^{N} \mathrm{Tr}[M_1 \ket{\psi_i}\bra{\psi_i}]^n \, \mathrm{Tr}[M_2 \ket{\psi_i}\bra{\psi_i}]^{k-n}
+      \end{equation}
+    $$
+    $$
+      \begin{equation}
+        \mathrm{pr(n | \tilde{\rho}_2)} = \binom{k}{n} \times \frac{1}{N} \sum_{i=1}^{N} \mathrm{Tr}[M_1 \ket{\phi_i}\bra{\phi_i}]^n \, \mathrm{Tr}[M_2 \ket{\phi_i}\bra{\phi_i}]^{k-n}
+      \end{equation}
+    $$
+
+    <h2>Majority Voting</h2>
+    <p>
+      Suppose $k=3$ and $n=2$. Do we guess $\tilde{\rho}_1$ or $\tilde{\rho}_2$?
+      The majority voting decision rule tells us to pick the class which corresponding measurement outcome has the most qubits.
+      Here we have two qubits with outcome $1$ and one qubit with outcome $2$ - so we guess that the qubit is from $\tilde{\rho}_1$.
+    </p>
+
+    <p>
+      The success probability of this scheme is:
+    </p>
+    $$
+    \begin{equation}
+      \mathrm{pr(success)} = \sum_{n \gt k} \mathrm{pr}(n | \tilde{\rho}_1) \mathrm{pr}(\tilde{\rho}_1) + 
+                             \sum_{n \lt k} \mathrm{pr}(n | \tilde{\rho}_2) \mathrm{pr}(\tilde{\rho}_2)
+    \end{equation}
+    $$
+
+    <p>
+      The game then is to find the optimal pair of measurement operators $\{M_1, M_2\}$ to maximise the success probability in Eq. 14.
+    </p>
+    
+    <p>
+      The first step is to generate a pair of density matrices $\rho_1$ and $\rho_2$ of the form in Eq. 4 and 5 (with $p_1 = p_2 = 0.5$).
+      This can be done by first generating two overlapping clusters of pure states, and then applying an unitary transformation to one of the clusters to separate it partially from the other.
+      The two clusters may be visualised on a Bloch sphere:
+    </p>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/1_mixed_states.png" alt="mixed_states" width="400" />
+      <figcaption>Figure 1: red: $\rho_1$, gray: $\rho_2$, green: Helstrom measurement</figcaption>
+    </figure>
+
+    <p>
+      We then solve for the optimal measurement by optimisation (I am not sure if there is an analytical way to do this). 
+      We set $-\mathrm{pr(success)}$ as the objective to minimise, and impose the constraints that $M_1$ and $M_2$ are positive semidefinite.
+      This is done for different values of $k$, producing a pair of measurement operators $\{M_0, M_1\}$ for each $k$. 
+      The measurement operators may be visualised by plotting the points $(\mathrm{Tr}[\sigma_x M_0], \mathrm{Tr}[\sigma_y M_0], \mathrm{Tr}[\sigma_z M_0])$ and
+      $(\mathrm{Tr}[\sigma_x M_1], \mathrm{Tr}[\sigma_y M_1], \mathrm{Tr}[\sigma_z M_1])$ on the surface of the bloch sphere.
+    </p>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/2_measurement_bloch.png" alt="measurement_bloch" width="400" />
+      <figcaption>Figure 2: optimised measurement bases represented on the Bloch sphere; bright blue corresponds to $k=1$, with redder shades corresponding to larger $k$.</figcaption>
+    </figure>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/3_measurement_projection.png" alt="measurement_projection" width="600" />
+      <figcaption>Figure 3: projections of measurement vectors onto x-y and y-z planes.</figcaption>
+    </figure>
+
+    <p>
+      It is immediately clear from the Bloch sphere picture that the optimal measurements for $k \gt 1$ is not the same as the single qubit Helstrom measurement.
+      The success probabilities for both under majority voting are as follow:
+    </p>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/4_optimal_vs_single_qubit.png" alt="success_probabilities" width="500" />
+      <figcaption>Figure 4: success probabilities for optimised and single qubit measurement operators.</figcaption>
+    </figure>
+
+    <p>
+      Interestingly, the success probability of the single qubit case plateaus at around $0.8$, while that of the optimised measurement continues to increase.
+      The reason for this is that there are a number of highly overlapping states in the two clusters.
+      The single qubit Helstrom measurement is very poor at resolving these states, so even with a large number of repeated measurements these states remain difficult to resolve.
+      There's more to this but I have not figured it out.
+    </p>
+    
+    <h2>Likelihood Plots</h2>
+    <p>
+      Examining the form of Eq. 12 and 13 we find that each of these distributions are essentially the average of $N$ binomial distributions. 
+      To get some additional insight as to what the optimisation is doing, we can plot the likelihood functions given by Eq. 12 and 13, as well as the mean of each of their consituent binomial distributions for various $k$.
+    </p>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/k19_optimised.png" alt="k19_optimised" width="500" />
+      <figcaption>Figure 5: $k=19$, optimised measurements (majority voting).</figcaption>
+    </figure>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/k19_single.png" alt="k19_single" width="500" />
+      <figcaption>Figure 6: $k=19$, single qubit Helstrom measurements.</figcaption>
+    </figure>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/k99_optimised.png" alt="k99_optimised" width="500" />
+      <figcaption>Figure 7: $k=99$, optimised measurements (majority voting).</figcaption>
+    </figure>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/k99_single.png" alt="k99_single" width="500" />
+      <figcaption>Figure 8: $k=99$, single qubit Helstrom measurements.</figcaption>
+    </figure>
+
+    <p>
+      The error probability is one-half the area under the blue distribution that lies the left of the decision boundary,
+      plus one-half the area under the orange distribution that lies to the right of the decision boundary (weighted by the prior probabilities $p_1$ and $p_2$ in the general case).
+    </p>
+    
+    <h2>Maximum Likelihood</h2>
+    <p>
+      Majority voting is not the optimal decision rule as it fixes the decision boundary at $k/2$, thereby reducing some degrees of freedom that the scheme has. 
+      A more flexible alternative is to adopt a maximum likelihood decision rule: 
+      for outcome $n$, we guess that the class is $\tilde{\rho}_1$ if $\mathrm{pr}(n | \tilde{\rho}_1) \gt \mathrm{pr}(n | \tilde{\rho}_2)$, 
+      and $\tilde{\rho}_2$ if $\mathrm{pr}(n | \tilde{\rho}_2) \gt \mathrm{pr}(n | \tilde{\rho}_1)$. 
+      In other words, we pick the class with the higher likelihood of yielding the outcome $n$.
+      Visually, this means that the optimiser now has the freedom to shift the gray decision boundary around, and also to introduce multiple decision boundaries.
+    </p>
+
+    <p>
+      The success probability of the maximum likelihood scheme is given by:
+    </p>
+
+    $$
+      \begin{equation}
+        \mathrm{pr(success)} = \sum_{\substack{\{n: \, \mathrm{pr}(n | \tilde{\rho}_1) \\ \gt \mathrm{pr}(n | \tilde{\rho}_2)\}}} \mathrm{pr}(n | \tilde{\rho}_1) \mathrm{pr}(\tilde{\rho}_1) + 
+                               \sum_{\substack{\{n: \, \mathrm{pr}(n | \tilde{\rho}_2) \\ \gt \mathrm{pr}(n | \tilde{\rho}_1)\}}} \mathrm{pr}(n | \tilde{\rho}_2) \mathrm{pr}(\tilde{\rho}_2)
+      \end{equation}
+    $$
+
+    <p>
+      The same constrained optimisation can be applied to Eq. 15 to solve for the optimal measurements for the maximum likelihood objective, but to ensure the solution is indeed optimal we should perform a sweep.
+      Assuming that there is only one decision boundary, the maximum likelihood solution may be obtained by setting the decision boundary at all $k$ possible positions for the $k$ photon case.
+      The maximum likelihood success probability is the maximum probability in the above sweep. 
+      Performing the sweep produces a plot that looks something like this:
+    </p>
+      <figure style="text-align: center;">
+      <img src="week1-imgs/7_max_likelihood_sweep.png" alt="sweep" width="500" />
+      <figcaption>Figure 9: sweep across all decision boundaries; crossed point indicates unsuccessful optimisation, yellow points indicate optimal decision boundaries.</figcaption>
+    </figure>
+    
+    <p>
+      Doing so, we generate the following set of likelihood plots:
+    </p>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/k19_max_likelihood.png" alt="k19_max_likelihood" width="500" />
+      <figcaption>Figure 10: $k=19$, optimised measurements (maximum likelihood).</figcaption>
+    </figure>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/k99_max_likelihood.png" alt="k99_max_likelihood" width="500" />
+      <figcaption>Figure 11: $k=99$, optimised measurements (maximum likelihood).</figcaption>
+    </figure>
+
+    <p>
+      Finally, a comparison of all four aforementioned methods:
+    </p>
+
+    <figure style="text-align: center;">
+      <img src="week1-imgs/6_success_probabilities_all_correct.png" alt="all_success_probabilities" width="500" />
+      <figcaption>Figure 12: success probabilities for entangled, single qubit, majority voting and maximum likelihood schemes.</figcaption>
+    </figure>
+
+</body>
+</html>

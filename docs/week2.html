@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Summer 2025 - Week 2</title>
+
+  <!-- Link external CSS -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- MathJax LaTeX Support -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<body>
+  <header>
+    Summer 2025 - Week 2
+  </header>
+
+  <main>
+    <nav class="page-nav">
+      <a href="index.html" class="btn">Index</a> | 
+      <a href="week1.html" class="btn">Prev</a> | 
+      <a href="week3.html" class="btn">Next</a>
+    </nav>
+    
+    <h1>POVMs and PVMs</h1>
+
+    <p>
+      The optimal <b>positive operator valued measure</b> (POVM) for discriminating $M$ classes may be found using convex optimisation.
+      However, the same optimisation procedure will not work if we restrict our search space to only <b>projector valued measures</b> (PVMs), as the set of all projectors is not convex.
+      This raises a question: given a POVM, can we construct from it a PVM with a comparable success rate?
+      Note that we are not looking for the optimal PVM.
+      Rather, we are looking for an easily constructable PVM that is <i>pretty good</i> relative to the optimal POVM.
+    </p>
+
+    <h2>Small MNIST</h2>
+    <p>
+      Optimising on $14$ by $14$ images of MNIST produces a POVM $\{M_0, M_1, \dots, M_9\}$, pictured below:
+    </p>
+    <figure style="text-align: center;">
+      <img src="week2-imgs/1_measurement_operators.png" alt="measurement_operators_mnist" width="600" />
+      <figcaption>Figure 1: optimal measurement operators for 10 class MNIST.</figcaption>
+    </figure>
+
+    <p>
+      Some qualitative insight can be gained by plotting the eigenvectors of various measurement operators $M_i$ based on the size of their eigenvalues:
+    </p>
+    <figure style="text-align: center;">
+      <img src="week2-imgs/2_most_significant_0.png" alt="significant_eigenvectors_of_0" width="600" />
+      <figcaption>Figure 2: eigenvectors of $0$ with the largest eigenvalues.</figcaption>
+    </figure>
+    <figure style="text-align: center;">
+      <img src="week2-imgs/3_least_significant_0.png" alt="zero_eigenvectors_of_0" width="600" />
+      <figcaption>Figure 3: eigenvectors of $0$ with the eigenvalue zero.</figcaption>
+    </figure>
+    <figure style="text-align: center;">
+      <img src="week2-imgs/4_most_significant_1.png" alt="significant_eigenvectors_of_1" width="600" />
+      <figcaption>Figure 4: eigenvectors of $1$ with the largest eigenvalues.</figcaption>
+    </figure>
+    <figure style="text-align: center;">
+      <img src="week2-imgs/5_least_significant_1.png" alt="zero_eigenvectors_of_1" width="600" />
+      <figcaption>Figure 5: eigenvectors of $1$ with the eigenvalue zero.</figcaption>
+    </figure>
+
+    <p>
+      We can also plot out the distribution of eigenvalues for each $M_i$, which gives us an important insight: 
+      most of the eigenvectors of each $M_i$ have eigenvalues close to zero, and those that do not have eigenvalues close to one.
+      This is intuitive as the dimension of MNIST's latent feature space is much smaller than the dimension of the image space.
+    </p>
+    <figure style="text-align: center;">
+      <img src="week2-imgs/6_eigenvalue_distribution_0.png" alt="eigenvalue_distributions_mnist" width="600" />
+      <figcaption>Figure 6: eigenvalue distributions for $M_0$.</figcaption>
+    </figure>
+
+    <h2>Simple Algorithm</h2>
+    <p>
+      The above motivates the following first step: for each $M_i$ select the eigenvectors $\ket{v_l}$ that have eigenvalues $\lambda_l \gt \alpha$, where $\alpha$ is a flexible threshold.
+      Then, construct the projector $P_i = \sum_{l} \ket{v_l}\bra{v_l}$.
+      This yields a set of projectors $\{P_0, P_1, \dots, P_9\}$.
+      However, two important ingredients are missing: 
+    </p>
+    <ol>
+      <li>The projectors are not orthogonal: $P_i P_j \neq \delta_{ij}P_i$.</li>
+      <li>The sum of the projectors is not the identity.</li>
+    </ol>
+
+    <p>
+      While condition 1. is not necessary for a valid POVM, it is desirable to have for two reasons.
+      First, a measurement basis consisting of orthogonal projectors is essentially a decomposition of the image into a set of orthogonal modes, which is nice from a conceptual point of view.
+      Second, provided $P_0$ to $P_9$ are mutually orthogonal, the final element of the measurement basis $P_m = I - \sum_{i} P_i$ is guaranteed to be a projector and therefore a valid measurement.
+    </p>
+
+    <p>
+      The next step then is to create a set of mutually othorgonal projectors $\{\tilde{P}_0, \tilde{P}_1, \dots, \tilde{P}_9\}$ from the set $\{P_0, P_1, \dots, P_9\}$. 
+      Intuitively, we want $\{\tilde{P}_i\}$ to be as close to $\{P_i\}$ as possible.
+      Mathematically, this may be formulated by asking: given the matrix $A$ which columns are the eigenvectors of $\{P_i\}$, which orthogonal matrix $\tilde{Q}$ minimises the Frobenius norm of $A - \tilde{Q}$?
+      It turns out that $\tilde{Q}$ is given by the polar decomposition of $A$:
+    </p>
+    $$
+      \begin{equation}
+      A = \tilde{Q}H
+      \end{equation}
+    $$
+    
+    <p>
+      where $\tilde{Q}$ is the desired orthogonal matrix, and $H$ is a Hermitian matrix. 
+      The overlaps between the columns of $A$ and the overlaps between the columns of $\tilde{Q}$ are shown below:
+    </p>
+    <div style="display: flex; justify-content: center; gap: 20px;">
+      <figure style="text-align: center;">
+        <img src="week2-imgs/7_overlaps_before.png" alt="overlaps_before" width="300">
+        <figcaption>Figure 7: inner product between columns of $A$.</figcaption>
+      </figure>
+
+      <figure style="text-align: center;">
+        <img src="week2-imgs/8_overlaps_after.png" alt="overlaps_after" width="300">
+        <figcaption>Figure 8: inner product between columns of $\tilde{Q}$.</figcaption>
+      </figure>
+    </div>
+
+    <p>
+      Finally, we reconstruct the PVM operators $\tilde{P}_i = \sum_{l} \ket{\tilde{v}_l}\bra{\tilde{v}_l}$, and 
+      append $\tilde{P}_m = I - \sum_{i} \tilde{P}_i$ to the PVM to ensure that the measurement operators sum to the identity.
+    </p>
+
+    <h2>Performance Comparison</h2>
+    <p>
+      How does the performance of the above PVM compare to the optimal POVM? 
+      A comprehensive comparison can be obtained by plotting the confusion matrices for both measurements bases.
+      In this case, we have plotted the matrix such that the entry at position $(i, j)$ corresponds to the probability that the $j^{\mathrm{th}}$ class is projected onto the $i^{\mathrm{th}}$ measurement outcome.
+      In other words, each column of the matrix corresponds to a probability distribution.
+    </p>
+    <figure style="text-align: center;">
+      <img src="week2-imgs/9_pvm_confusion_matrix.png" alt="9_pvm_confusion_matrix" width="600">
+      <figcaption>Figure 9: confusion matrix for PVM.</figcaption>
+    </figure>
+
+    <figure style="text-align: center;">
+      <img src="week2-imgs/10_povm_confusion_matrix.png" alt="povm_confusion_matrix" width="600">
+      <figcaption>Figure 10: confusion matrix for optimal POVM.</figcaption>
+    </figure>
+
+    <p>
+      The error rate increases by less than one percent, although this may not be too surprising by now.
+    </p>
+
+    <p>
+      For the above PVM we have set the threshold at $\alpha = 0.8$. 
+      By increasing $\alpha$ we can further reduce the rank of the projectors $P_0$ to $P_9$ (by transferring their ranks to $P_m$).
+      This might be useful if we are trying to build a mode sorter? 
+      To see how much the performance of the PVM drops we can make a plot of the total success probability (assuming an uniform prior over the 10 classes) against $\alpha$.
+    </p>
+    <figure style="text-align: center;">
+      <img src="week2-imgs/11_prob_against_alpha.png" alt="prob_against_alpha" width="600" />
+      <figcaption>Figure 11: success probability of PVM against threshold $\alpha$.</figcaption>
+    </figure>
+    
+  </main>
+</body>
+</html>
