@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Code Snippet 1</title>
+
+  <!-- Link external CSS -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- MathJax LaTeX Support -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        tags: 'all'  // Enable automatic equation numbering
+      }
+    };
+  </script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+
+  <!-- Python Highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+<body>
+  <header>
+    Code Snippet 1
+  </header>
+
+  <main>
+
+    <h1>Distributing Balls in Bins</h1>
+
+    <p>
+        Suppose for whatever reason we want to get all the possible ways of distributing $k$ balls in $n$ bins. The following small piece of code accomplishes is recursively in a few simple lines.
+    </p>
+
+    <pre><code class="language-python">def helper(remaining: int, classes_left: int, prefix: List[int]):
+      if classes_left == 1:
+        counts.append(prefix + [remaining])
+        return
+      for i in range(remaining + 1):
+        helper(remaining - i, classes_left - 1, prefix + [i])</code></pre>
+   
+    <p>
+      The above function <code>`helper(k, n, [])`</code> returns a list of all possible ways to distribute the k balls among the n bins. 
+    </p>
+
+    <p>
+      The recursion tree looks like this for $k=2$, $n=3$:
+    </p>
+
+    <pre><code>(2,3,[])
+--------(2,2,[0])
+-----------------(2,1,[0,0]) #2-0=2
+----------------------------append([0,0,2])
+-----------------(1,1,[0,1]) #2-1=1
+----------------------------append([0,1,1])
+-----------------(0,1,[0,2]) #2-2=0
+----------------------------append([0,2,0])
+--------(1,2,[1])
+-----------------(1,1,[1,0]) #1-0=1
+----------------------------append([1,0,1])
+-----------------(0,1,[1,1]) #1-1=0
+----------------------------append([1,1,0])
+--------(0,2,[2])
+-----------------(0,1,[2,0]) #0-0=0
+----------------------------append([2,0,0])</code></pre>
+
+    <p>
+      Posting this here mainly to experiment with code blocks. But you do agree that the function is pretty neat, right? Recursion is cool 😎.
+    </p>
+
+</body>
+</html>
