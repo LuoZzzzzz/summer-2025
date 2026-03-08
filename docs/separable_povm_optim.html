@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>POVM Optimisation via Cholesky Parameterisation</title>
+
+  <link rel="stylesheet" href="styles.css" />
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        tags: 'all'
+      }
+    };
+  </script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<body>
+  <header>
+    Physics Memos
+  </header>
+
+  <main>
+    <nav class="page-nav">
+      <a href="index.html" class="btn">Index</a>
+    </nav>
+
+    <h1>Optimisation of separable POVMs</h1>
+    <p>
+      Short run-through of the POVM optimisation code <a href="https://github.com/LuoZzzzzz/separable_povm_optimisation">here</a>. More details coming.
+    </p>
+
+    <h2>Cholesky parameterisation</h2>
+
+    <p>
+      We would like to optimise a set of measurement operators $\{E_i\}$ satisfying $E_i \geq 0$ and $\sum_i E_i = I$. Instead of explicitly enforcing these constraints during optimisation, we can enforce them implicitly through a suitable parameterisation. One choice is the Cholesky parameterisation, which proceeds as follows.
+    </p>
+
+    <p>
+      First, create a set of $d \times r$ real matrices $L_i$, where $d$ is the dimension of the Hilbert space and $r \leq d$ is the desired operator rank. These are the free parameters of the model, stored as learnable PyTorch tensors. Second, compute $A_i = L_i L_i^\top$. Each $A_i$ is positive semidefinite by construction. Third, form $S = \sum_i A_i$ and compute $S^{-1/2}$ via eigendecomposition:
+      $$
+        S = V \, \mathrm{diag}(\lambda) \, V^\top, \qquad S^{-1/2} = V \, \mathrm{diag}(\lambda^{-1/2}) \, V^\top.
+      $$
+      Eigenvalues are clamped to a floor of $10^{-12}$ to avoid division by zero. Finally, construct
+      $$
+        E_i = S^{-1/2} A_i S^{-1/2}.
+      $$
+      These operators are positive semidefinite and sum to the identity by construction, forming a valid POVM. A final symmetrisation step $E_i \leftarrow \frac{1}{2}(E_i + E_i^\top)$ corrects any floating-point asymmetry introduced during computation.
+    </p>
+
+    <h2>Success calculation</h2>
+
+    <p>
+      The quantity being maximised is the <em>$k$-copy MAP success rate</em>: the probability that a MAP decision rule correctly identifies the class of an unknown state from $k$ independent measurement outcomes. Its computation proceeds in three stages.
+    </p>
+
+    <h3>Single-copy probabilities</h3>
+
+    <p>
+      For each density matrix $\rho$ in the dataset and each POVM element $E_m$, the Born-rule probability is
+      $$
+        p(m \mid \rho) = \mathrm{Tr}[E_m \rho].
+      $$
+      This is evaluated for an entire batch simultaneously using <code>torch.einsum('ij,nji->n', E_m, rhos)</code>, giving a matrix of probabilities of shape $(\text{batch}, M)$. The results are clamped to be non-negative and row-normalised to absorb any rounding error from the POVM construction.
+    </p>
+
+    <h3>$k$-copy likelihoods</h3>
+
+    <p>
+      With $k$ independent measurements, each aggregate outcome is a count vector $\mathbf{s} = (s_1, \dots, s_M)$ where $s_m$ is the number of times outcome $m$ was observed, with $\sum_m s_m = k$. The method <code>_generate_count_vectors(k, M)</code> recursively enumerates all such vectors, producing a count grid of shape $\binom{k + M - 1}{M - 1} \times M$.
+    </p>
+
+    <p>
+      For each class $c$, the likelihood of observing $\mathbf{s}$ is averaged over all states in the class:
+      $$
+        P(\mathbf{s} \mid c) = \frac{1}{N_c} \sum_{i=1}^{N_c} \mathrm{Multinomial}(\mathbf{s};\, k,\, \mathbf{p}_i),
+      $$
+      where $\mathbf{p}_i = (p(1|\rho_i), \dots, p(M|\rho_i))$ are the single-copy Born probabilities for state $\rho_i$ in class $c$. This correctly accounts for intra-class variability. It is <em>not</em> the same as computing the multinomial for the class-average state $\bar{\rho}^c$, which would conflate a mixture of states with a single average state.
+    </p>
+
+    <p>
+      For numerical stability the multinomial is computed in log-space:
+      $$
+        \log P(\mathbf{s} \mid \rho_i) = \log\frac{k!}{\prod_m s_m!} + \sum_m s_m \log p(m \mid \rho_i).
+      $$
+      The log-factorials are evaluated with <code>torch.lgamma</code>. The key operation is the matrix product <code>log_p @ count_grid.T</code>, which simultaneously evaluates $\sum_m s_m \log p(m|\rho_i)$ for every count vector in a single batched multiply, yielding a tensor of shape $(N_c, \text{num_outcomes})$. After exponentiation this is averaged over $i$ to give the final likelihoods of shape $(M, \text{num_outcomes})$.
+    </p>
+
+    <h3>MAP decision and success rate</h3>
+
+    <p>
+      Given class priors $\pi_c$ (uniform by default), the joint probability that class $c$ was the true class and count vector $\mathbf{s}$ was observed is $J(c, \mathbf{s}) = \pi_c \cdot P(\mathbf{s} \mid c)$. The MAP decision for each outcome $\mathbf{s}$ is to predict whichever class maximises $J(c, \mathbf{s})$. The overall success rate is then
+      $$
+        P(\text{success}) = \sum_{\mathbf{s}} \max_c \, J(c, \mathbf{s}).
+      $$
+      In code this is: form the joint matrix <code>likelihoods * priors.view(-1, 1)</code>, take the column-wise maximum with <code>torch.max(joint, dim=0)</code>, and sum all column maxima. The loss passed to the optimiser is the negative of this scalar, $\mathcal{L} = -P(\text{success})$.
+    </p>
+
+    <h2>$k=1$ baseline</h2>
+
+    <p>
+      For $k = 1$ the MAP success rate reduces to
+      $$
+        P(\text{success},\, k{=}1) = \sum_m \max_c \, \pi_c \, \mathrm{Tr}[E_m \sigma^c],
+      $$
+      where $\sigma^c = \frac{1}{N_c}\sum_i \rho_i^c$ is the class-average state. This is a semidefinite programme (SDP) and is solved globally via <code>cvxpy</code>. The resulting POVM elements are post-processed (symmetrised, eigendecomposed, eigenvalues clamped) and used to warm-start the Cholesky parameterisation for the gradient-based optimisation at higher $k$.
+    </p>
+
+    <h2>Optimisation tricks</h2>
+
+    <p>
+      If we try to optimise MNIST directly, the eigendecomposition in the POVM construction will fail at step 3. The reason appears to be the $2 \times 2$ zero padding on the sides of MNIST images. This padding introduces a subspace common to all data classes that is entirely zero, causing the eigenvalues of $S$ to cluster near zero and making $S^{-1/2}$ numerically unstable (the instability is related to terms of the form $1/(\lambda_i - \lambda_j)$ that appear in the derivative of the eigendecomposition — when two eigenvalues are nearly equal and close to machine precision these become arbitrarily large). The solution is to simply strip the padding before feeding images into the optimiser.
+    </p>
+
+    <p>
+      A second issue concerns interpretability. Due to the inherent jaggedness of real MNIST images, the later eigenvectors of an optimised measurement appear grainy and noise-like. Applying a small Gaussian blur to the images before optimisation smooths the eigenvectors and makes them substantially more interpretable.
+    </p>
+
+    <h2>Iterative optimisation</h2>
+
+    <p>
+      The optimisation for general $k$ is non-convex. The <code>optimize()</code> method addresses this through a multi-round strategy. In round 1, $k = 1$ is handled by the SDP (globally optimal). For $k > 1$, optimisation uses L-BFGS with a strong Wolfe line search, a second-order quasi-Newton method well-suited to smooth non-convex objectives. To mitigate local minima, <em>multi-start initialisation</em> is used: when optimising for $k$, the model is restarted from the best parameter states found for all previously optimised values of $k$, and the overall best result across all starts is retained (although there is usually no improvement). This can be toggled using the <code>cross_k_restarts</code> flag. Each run terminates early when the gradient norm falls below <code>grad_tol</code> or when the success rate fails to improve by more than <code>improvement_tol</code> for <code>patience</code> consecutive epochs.
+    </p>
+
+    <p>
+      A common pathology is that the POVM optimised for $l$ copies may in fact score higher at some target $k \neq l$ than the POVM that was actually trained for $k$. To correct this, each subsequent round evaluates every state in the pool on every $k$ to build a cross-$k$ score table, identifies which target values would benefit from re-optimisation (ie. where some other state scores strictly higher by more than <code>reassignment_tol</code>), and re-runs L-BFGS for each such $k$ using the winning foreign state as the warm-start. This iterates until no $k$ wants to switch (a fixed point) or <code>max_rounds</code> is reached. Candidates are prioritised by the size of the available improvement. The $k = 1$ entry is never re-optimised, since its SDP solution is already globally optimal.
+    </p>
+
+  </main>
+</body>
+</html>
