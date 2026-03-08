@@ -25,23 +25,22 @@
 </head>
 <body>
   <header>
-    Summer 2025 - Week 3
+    Summer 2025
   </header>
 
   <main>
     <nav class="page-nav">
       <a href="index.html" class="btn">Index</a> | 
-      <a href="week2.html" class="btn">Prev</a> | 
-      <a href="week4.html" class="btn">Next</a>
+      <a href="week2.html" class="btn">Prev</a>
     </nav>
 
-    <h1>Classification by Mode Sorting</h1>
+    <h1>Classification by mode sorting</h1>
 
     <p>
       This week we try to implement the mode sorting scheme from week 2. 
     </p>
 
-    <h2>Convex Optimisation</h2>
+    <h2>Convex optimisation</h2>
     <p>
       The FMNIST images used in the experiment are 100 by 100, which means that the density matrices and measurement operators involved are 10000 by 10000.
       Running a convex optimisation (for the POVM) on such a scale is impossible.
@@ -59,7 +58,7 @@
       <figcaption>Figure 1: Upsampled shirt mode (after orthogonalisation)</figcaption>
     </figure>
 
-    <h2>Selecting Eigenmodes</h2>
+    <h2>Selecting eigenmodes</h2>
     <p>
       Now that we have a set of orthogonal modes from the various PVM measurements, we need to get the diffractive network to map them to different detection regions.
       Naively we will train the diffractive network directly on the full set of modes. 
@@ -213,7 +212,7 @@
     </figure>
 
 
-    <h2>Comparison with Direct Backprop</h2>
+    <h2>Comparison with direct backprop</h2>
     <p>
       The straightforward way to train the diffractive network is, of course, to just get it to minimise the overlap between the output distributions of different classes.
       This method gives an accuracy of about 23%, which is very similar to mode sorting.

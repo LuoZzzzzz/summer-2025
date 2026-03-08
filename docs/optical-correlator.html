@@ -133,7 +133,7 @@
     So we should expect blurring on the length scale of $\frac{1}{W}$ (in $k$ space, to convert to physical length we multiply by $\frac{\lambda z}{2\pi}$), which is exactly what the convolution here is doing. 
     </p>
 
-    <h2>Practical Considerations</h2>
+    <h2>Practical considerations</h2>
     <p>
       When we optimise the network on a computer, the amplitudes are represented in the form of arrays. 
       The array representing the field on the SLM plane is $[f_0, f_1, \dots, f_{n-1}]$ where $f_n = f(\frac{nL}{N})$. What is the DFT of this array? 
@@ -169,7 +169,7 @@
       However, this artifact does not really affect the resolution of the kernel pattern, so we should be able to ignore it. 
     </p>
 
-    <h2>Grid Point to Spatial Distance Conversion</h2>
+    <h2>Grid point to spatial distance conversion</h2>
     <p>
       The spatial distance between adjacent points in the $[f_0, f_1, \dots, f_{n-1}]$ array is just the pixel pitch $d$. 
       What is the spatial distance between adjacent points in the DFT array $[\tilde{f}_0, \tilde{f}_1, \dots, \tilde{f}_{n-1}]$? 

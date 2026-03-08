@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Summer 2025 - Week 2</title>
+  <title>Summer 2025</title>
 
   <!-- Link external CSS -->
   <link rel="stylesheet" href="styles.css" />
@@ -25,13 +25,13 @@
 </head>
 <body>
   <header>
-    Summer 2025 - Week 2
+    Summer 2025
   </header>
 
   <main>
     <nav class="page-nav">
       <a href="index.html" class="btn">Index</a> | 
-      <a href="week1.html" class="btn">Prev</a> | 
+      <a href="separable_povm_optim.html" class="btn">Prev</a> | 
       <a href="week3.html" class="btn">Next</a>
     </nav>
     
@@ -42,7 +42,7 @@
       However, the same optimisation procedure will not work if we restrict our search space to only <b>projector valued measures</b> (PVMs), as the set of all projectors is not convex.
       This raises a question: given a POVM, can we construct from it a PVM with a comparable success rate?
       Note that we are not looking for the optimal PVM.
-      Rather, we are looking for an easily constructable PVM that is <i>pretty good</i> relative to the optimal POVM.
+      Rather, we are looking for an easily constructable PVM that is comparable to the optimal POVM.
     </p>
 
     <h2>Small MNIST</h2>
@@ -84,7 +84,7 @@
       <figcaption>Figure 6: eigenvalue distributions for $M_0$.</figcaption>
     </figure>
 
-    <h2>Simple Algorithm</h2>
+    <h2>Simple algorithm</h2>
     <p>
       The above motivates the following first step: for each $M_i$ select the eigenvectors $\ket{v_l}$ that have eigenvalues $\lambda_l \gt \alpha$, where $\alpha$ is a flexible threshold.
       Then, construct the projector $P_i = \sum_{l} \ket{v_l}\bra{v_l}$.
@@ -135,7 +135,7 @@
       append $\tilde{P}_m = I - \sum_{i} \tilde{P}_i$ to the PVM to ensure that the measurement operators sum to the identity.
     </p>
 
-    <h2>Performance Comparison</h2>
+    <h2>Performance comparison</h2>
     <p>
       How does the performance of the above PVM compare to the optimal POVM? 
       A comprehensive comparison can be obtained by plotting the confusion matrices for both measurements bases.

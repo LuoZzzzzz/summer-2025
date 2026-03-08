@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>POVM Optimisation via Cholesky Parameterisation</title>
+  <title>Summer 2025</title>
 
   <link rel="stylesheet" href="styles.css" />
 
@@ -24,12 +24,14 @@
 </head>
 <body>
   <header>
-    Physics Memos
+    Summer 2025
   </header>
 
   <main>
     <nav class="page-nav">
-      <a href="index.html" class="btn">Index</a>
+      <a href="index.html" class="btn">Index</a> | 
+      <a href="week1.html" class="btn">Prev</a> | 
+      <a href="week2.html" class="btn">Next</a>
     </nav>
 
     <h1>Optimisation of separable POVMs</h1>
@@ -74,7 +76,7 @@
     <h3>$k$-copy likelihoods</h3>
 
     <p>
-      With $k$ independent measurements, each aggregate outcome is a count vector $\mathbf{s} = (s_1, \dots, s_M)$ where $s_m$ is the number of times outcome $m$ was observed, with $\sum_m s_m = k$. The method <code>_generate_count_vectors(k, M)</code> recursively enumerates all such vectors, producing a count grid of shape $\binom{k + M - 1}{M - 1} \times M$.
+      With $k$ independent measurements, each aggregate outcome is a count vector $\mathbf{s} = (s_1, \dots, s_M)$ where $s_m$ is the number of times outcome $m$ was observed, with $\sum_m s_m = k$. The method <code>_generate_count_vectors(k, M)</code> recursively enumerates all such vectors, producing a count grid of shape $\binom{k + M - 1}{M - 1} \times M$. The exact logic of this code is explained <a href="https://luozzzzzz.github.io/summer-2025/codesnippet1.html">here</a>.
     </p>
 
     <p>
@@ -100,7 +102,7 @@
       $$
         P(\text{success}) = \sum_{\mathbf{s}} \max_c \, J(c, \mathbf{s}).
       $$
-      In code this is: form the joint matrix <code>likelihoods * priors.view(-1, 1)</code>, take the column-wise maximum with <code>torch.max(joint, dim=0)</code>, and sum all column maxima. The loss passed to the optimiser is the negative of this scalar, $\mathcal{L} = -P(\text{success})$.
+      In code this is: form the joint matrix <code>likelihoods * priors.view(-1, 1)</code>, take the column-wise maximum with <code>torch.max(joint, dim=0)</code>, and sum all column maxima. The loss passed to the optimiser is the negative of this scalar, $\mathcal{L} = -P(\text{success})$. This is explained in more detail <a href="https://luozzzzzz.github.io/summer-2025/code-for-mcsd.html">here</a>.
     </p>
 
     <h2>$k=1$ baseline</h2>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Summer 2025 - Week 1</title>
+  <title>Summer 2025</title>
 
   <!-- Link external CSS -->
   <link rel="stylesheet" href="styles.css" />
@@ -26,16 +26,16 @@
 </head>
 <body>
   <header>
-    Summer 2025 - Week 1
+    Summer 2025
   </header>
 
   <main>
     <nav class="page-nav">
       <a href="index.html" class="btn">Index</a> | 
-      <a href="week2.html" class="btn">Next</a>
+      <a href="separable_povm_optim.html" class="btn">Next</a>
     </nav>
 
-    <h1>Discriminating Quantum States</h1>
+    <h1>Discriminating quantum states</h1>
 
     <p>
         Given two mixed states $\rho_1$ and $\rho_2$ we sample a single photon from one of them with prior probabilities $p_1$ and $p_2$. 
@@ -76,7 +76,7 @@
       $\| \Delta \|_{1}$ denotes the trace norm of $\Delta$ and is calculated by summing the absolute values of all eigenvalues of $\Delta$.
     </p>
 
-    <h2>Multiple Photons</h2>
+    <h2>Multiple photons</h2>
     <p>
       Now, suppose we are able to sample $k \gt 1$ photons. Will the Helstrom measurement still be optimal? 
       This is a subtle question, because the answer depends on how the sampling is performed.
@@ -110,7 +110,7 @@
       This raises the following question: what is the optimal measurement basis for discriminating $\tilde{\rho}_1$ and $\tilde{\rho}_2$ in Eq. 3?
     </p>
 
-    <h2>Discriminating Qubits</h2>
+    <h2>Discriminating qubits</h2>
     <p>
       Let us consider two mixed states $\rho_1$ and $\rho_2$, each containing $N$ qubits: 
     </p>
@@ -197,7 +197,7 @@
       \end{equation}
     $$
 
-    <h2>Majority Voting</h2>
+    <h2>Majority voting</h2>
     <p>
       Suppose $k=3$ and $n=2$. Do we guess $\tilde{\rho}_1$ or $\tilde{\rho}_2$?
       The majority voting decision rule tells us to pick the class which corresponding measurement outcome has the most qubits.
@@ -264,7 +264,7 @@
       There's more to this but I have not figured it out.
     </p>
     
-    <h2>Likelihood Plots</h2>
+    <h2>Likelihood plots</h2>
     <p>
       Examining the form of Eq. 12 and 13 we find that each of these distributions are essentially the average of $N$ binomial distributions. 
       To get some additional insight as to what the optimisation is doing, we can plot the likelihood functions given by Eq. 12 and 13, as well as the mean of each of their consituent binomial distributions for various $k$.
@@ -295,7 +295,7 @@
       plus one-half the area under the orange distribution that lies to the right of the decision boundary (weighted by the prior probabilities $p_1$ and $p_2$ in the general case).
     </p>
     
-    <h2>Maximum Likelihood</h2>
+    <h2>Maximum likelihood</h2>
     <p>
       Majority voting is not the optimal decision rule as it fixes the decision boundary at $k/2$, thereby reducing some degrees of freedom that the scheme has. 
       A more flexible alternative is to adopt a maximum likelihood decision rule: 
