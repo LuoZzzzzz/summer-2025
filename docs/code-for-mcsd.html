@@ -36,7 +36,7 @@
     <p>
       A quantum POVM (positive operator valued measure) is a set of positive semidefinite matrices that sum to
       the identity. In the context of quantum state discrimination, the goal is to find a POVM that distinguishes
-      two our more ensembles of quantum states with the minimum error rate. 
+      two or more ensembles of quantum states with the minimum error rate.
     </p>
 
     <h2>Objective function</h2>
@@ -83,7 +83,7 @@
       on top of each other to create a $3$ by $6$ matrix (in general $N$ by $\binom{k + M - 1}{k - 1}$). 
       Rows of this matrix sum to one by construction. Each column of the matrix give likelihood of that outcome for different classes. 
       We assign the outcome of each column to the class with the highest likelihood. This is the maximum a posteriori (MAP) approach. 
-      Summing together the maximum values in each of the columns (and multiplying by $1/N$ gives the optimal success probabilities for a given POVM. 
+      Summing together the maximum values in each of the columns (and multiplying by $1/N$) gives the optimal success probabilities for a given POVM.
       This is our objective.
     </p>
   
@@ -118,8 +118,8 @@
 
     <p>
       The claim in step $3$ may be proven by noting that an eigenvector of $H$, $\ket{\psi}$ with eigenvalue $\lambda$
-      is also an eigenvector of $e^H$ with eigenvalue $e^\lambda$. Since, $H$ is Hermitian, its eigenvalues of real,
-      which means that all eigenvalues of $e^H$ are positive, thereby making it positive semidefinite. 
+      is also an eigenvector of $e^H$ with eigenvalue $e^\lambda$. Since $H$ is Hermitian, its eigenvalues are real,
+      which means that all eigenvalues of $e^H$ are positive, thereby making it positive semidefinite.
     </p>
 
     <p>

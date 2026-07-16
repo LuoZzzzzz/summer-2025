@@ -74,7 +74,7 @@
       Fourier transform of Dirac comb:
     </p>
     $$
-      \mathcal{F} \{ \operatorname{I\!I\!I}_T(x)) \} = \operatorname{I\!I\!I}_{\frac{1}{T}}(x)
+      \mathcal{F} \{ \operatorname{I\!I\!I}_T(x) \} = \operatorname{I\!I\!I}_{\frac{1}{T}}(x)
     $$
 
     
@@ -137,12 +137,12 @@
       When we optimise the network on a computer, the amplitudes are represented in the form of arrays. 
       The array representing the field on the SLM plane is $[f_0, f_1, \dots, f_{n-1}]$ where $f_n = f(\frac{nL}{N})$. What is the DFT of this array? 
       The reason we ask this is that we use DFT to propagate the field from the SLM plane to the camera plane. 
-      Some of the above artifacts will already introduced by the DFT (hence accounted for when we perform backpropagation on the DFT output), while there might be other artifacts that we need to manually include. 
-    <p>
+      Some of the above artifacts will already be introduced by the DFT (hence accounted for when we perform backpropagation on the DFT output), while there might be other artifacts that we need to manually include.
+    </p>
 
     <p>
       The DFT of a signal $f(x)$ sampled at discrete points $0, \frac{L}{N}, \dots \frac{(N-1)L}{N}$ is:
-    <p>
+    </p>
     $$
       \tilde{f}_m = \sum_{n=0}^{N-1} f_n e^{-2\pi i \frac{mn}{N}}
     $$
@@ -162,7 +162,7 @@
     </p>
 
     <p>
-      But this is really just $\mathcal{F} \{ \operatorname{rect}(\frac{x}{L}) \cdot [(f(x) \cdot \operatorname{I\!I\!I}_{\frac{L}{N}}(x)] \} = L \operatorname{sinc}(Lk) \star (\mathcal{F} \{ f(x) \} \star \operatorname{I\!I\!I}_{\frac{N}{L}}(k))$ where $k = \frac{2\pi m}{L}$. 
+      But this is really just $\mathcal{F} \{ \operatorname{rect}(\frac{x}{L}) \cdot [(f(x) \cdot \operatorname{I\!I\!I}_{\frac{L}{N}}(x))] \} = L \operatorname{sinc}(Lk) \star (\mathcal{F} \{ f(x) \} \star \operatorname{I\!I\!I}_{\frac{N}{L}}(k))$ where $k = \frac{2\pi m}{L}$.
       Now noting that $d = \frac{L}{N}$ we see that artifacts 1 and 3 are already accounted for in the DFT (at least at the grid points on the output that is within the DFT range; also the pattern might interpolate in between grid points in strange ways). 
       The only unaccounted feature is the $\operatorname{sinc}(dk)$ envelope, which arises from the width of the SLM pixels. 
       However, this artifact does not really affect the resolution of the kernel pattern, so we should be able to ignore it. 

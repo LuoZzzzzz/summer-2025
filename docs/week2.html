@@ -102,9 +102,9 @@
     </p>
 
     <p>
-      The next step then is to create a set of mutually othorgonal projectors $\{\tilde{P}_0, \tilde{P}_1, \dots, \tilde{P}_9\}$ from the set $\{P_0, P_1, \dots, P_9\}$. 
+      The next step then is to create a set of mutually orthogonal projectors $\{\tilde{P}_0, \tilde{P}_1, \dots, \tilde{P}_9\}$ from the set $\{P_0, P_1, \dots, P_9\}$.
       Intuitively, we want $\{\tilde{P}_i\}$ to be as close to $\{P_i\}$ as possible.
-      Mathematically, this may be formulated by asking: given the matrix $A$ which columns are the eigenvectors of $\{P_i\}$, which orthogonal matrix $\tilde{Q}$ minimises the Frobenius norm of $A - \tilde{Q}$?
+      Mathematically, this may be formulated by asking: given the matrix $A$ whose columns are the eigenvectors of $\{P_i\}$, which orthogonal matrix $\tilde{Q}$ minimises the Frobenius norm of $A - \tilde{Q}$?
       It turns out that $\tilde{Q}$ is given by the polar decomposition of $A$:
     </p>
     $$
@@ -137,7 +137,7 @@
     <h2>Performance comparison</h2>
     <p>
       How does the performance of the above PVM compare to the optimal POVM? 
-      A comprehensive comparison can be obtained by plotting the confusion matrices for both measurements bases.
+      A comprehensive comparison can be obtained by plotting the confusion matrices for both measurement bases.
       In this case, we have plotted the matrix such that the entry at position $(i, j)$ corresponds to the probability that the $j^{\mathrm{th}}$ class is projected onto the $i^{\mathrm{th}}$ measurement outcome.
       In other words, each column of the matrix corresponds to a probability distribution.
     </p>
@@ -159,7 +159,7 @@
       For the above PVM we have set the threshold at $\alpha = 0.8$. 
       By increasing $\alpha$ we can further reduce the rank of the projectors $P_0$ to $P_9$ (by transferring their ranks to $P_m$).
       This might be useful if we are trying to build a mode sorter? 
-      To see how much the performance of the PVM drops we can make a plot of the total success probability (assuming an uniform prior over the 10 classes) against $\alpha$.
+      To see how much the performance of the PVM drops we can make a plot of the total success probability (assuming a uniform prior over the 10 classes) against $\alpha$.
     </p>
     <figure style="text-align: center;">
       <img src="week2-imgs/11_prob_against_alpha.png" alt="prob_against_alpha" width="600" />

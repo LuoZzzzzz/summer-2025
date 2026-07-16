@@ -81,7 +81,7 @@
       This is a subtle question, because the answer depends on how the sampling is performed.
       For example, we could sample repeatedly from the density matrix $\rho_1$. 
       Although we have fixed $\rho_1$, each individual photon may belong to a different pure state.
-      Alternatively, we may select $\rho_1$, and then select a random a pure state in $\rho_1$ and sample $k$ photons from that pure state.
+      Alternatively, we may select $\rho_1$, and then select a random pure state in $\rho_1$ and sample $k$ photons from that pure state.
       The difference between the two cases becomes clear when we write out the density matrices representing the joint state of the $k$ photons.
     </p>
 
@@ -95,7 +95,7 @@
     $$
 
     <p>
-      While in the latter case are sampling from: 
+      While in the latter case we are sampling from:
     </p>
     $$
       \begin{equation}
@@ -104,8 +104,8 @@
     $$
 
     <p>
-      The latter sampling procedure makes much more sense in the context of a classification task .
-      For example, if the $k$ photons had originated from an image, it is likely that the image remains relatively unchanged over duration over which the $k$ photons are produced.
+      The latter sampling procedure makes much more sense in the context of a classification task.
+      For example, if the $k$ photons had originated from an image, it is likely that the image remains relatively unchanged over the duration over which the $k$ photons are produced.
       This raises the following question: what is the optimal measurement basis for discriminating $\tilde{\rho}_1$ and $\tilde{\rho}_2$ in Eq. 3?
     </p>
 
@@ -143,7 +143,7 @@
     </p>
 
     <p>
-      The most general measurement are a pair of $2^k \times 2^k$ positive semidefinite operators $\{\tilde{M}_1, \tilde{M}_2\}$ satisfying $\tilde{M}_1 + \tilde{M}_2 = \tilde{I}$.
+      The most general measurement is a pair of $2^k \times 2^k$ positive semidefinite operators $\{\tilde{M}_1, \tilde{M}_2\}$ satisfying $\tilde{M}_1 + \tilde{M}_2 = \tilde{I}$.
       In fact, the optimal measurement is precisely the Helstrom measurement on the tensor product space $\mathcal{B} ^ {\otimes k}$. 
       However, this measurement will in general be entangled, and will be challenging to implement experimentally for large $k$.
       A more practical class of measurements are tensor product measurements of the form $M_{s} ^ {\otimes k}$ with $s \in \{1, 2\}$, where $M_{s}$ are local measurement operators on the single qubit Bloch ball $\mathcal{B}$.
@@ -172,7 +172,7 @@
       The outcome $(1, 2, 1)$ corresponds to the situation where the first, second and third qubits yield the outcomes $1$, $2$ and $1$ respectively.
       In practice however, the identities of the qubits and the order of the outcomes will not be known to us.
       The only information we will have is that there are two qubits in state $1$ and one qubit in state $2$.
-      In fact, since we fix $k=3$, it suffice to specify the number of qubits that are measured to be in state $1$. 
+      In fact, since we fix $k=3$, it suffices to specify the number of qubits that are measured to be in state $1$.
       Let's denote this number by $n$.
       Then, the probability of obtaining the outcome where $n=2$ is the sum of all possible permutations of $(1, 2, 1)$, of which there are $\binom{3}{2}$:
     </p>
@@ -199,7 +199,7 @@
     <h2>Majority voting</h2>
     <p>
       Suppose $k=3$ and $n=2$. Do we guess $\tilde{\rho}_1$ or $\tilde{\rho}_2$?
-      The majority voting decision rule tells us to pick the class which corresponding measurement outcome has the most qubits.
+      The majority voting decision rule tells us to pick the class whose corresponding measurement outcome has the most qubits.
       Here we have two qubits with outcome $1$ and one qubit with outcome $2$ - so we guess that the qubit is from $\tilde{\rho}_1$.
     </p>
 
@@ -233,7 +233,7 @@
       We set $-\mathrm{pr(success)}$ as the objective to minimise, and impose the constraints that $M_1$ and $M_2$ are positive semidefinite.
       This is done for different values of $k$, producing a pair of measurement operators $\{M_0, M_1\}$ for each $k$. 
       The measurement operators may be visualised by plotting the points $(\mathrm{Tr}[\sigma_x M_0], \mathrm{Tr}[\sigma_y M_0], \mathrm{Tr}[\sigma_z M_0])$ and
-      $(\mathrm{Tr}[\sigma_x M_1], \mathrm{Tr}[\sigma_y M_1], \mathrm{Tr}[\sigma_z M_1])$ on the surface of the bloch sphere.
+      $(\mathrm{Tr}[\sigma_x M_1], \mathrm{Tr}[\sigma_y M_1], \mathrm{Tr}[\sigma_z M_1])$ on the surface of the Bloch sphere.
     </p>
 
     <figure style="text-align: center;">
@@ -248,7 +248,7 @@
 
     <p>
       It is immediately clear from the Bloch sphere picture that the optimal measurements for $k \gt 1$ is not the same as the single qubit Helstrom measurement.
-      The success probabilities for both under majority voting are as follow:
+      The success probabilities for both under majority voting are as follows:
     </p>
 
     <figure style="text-align: center;">
@@ -266,7 +266,7 @@
     <h2>Likelihood plots</h2>
     <p>
       Examining the form of Eq. 12 and 13 we find that each of these distributions are essentially the average of $N$ binomial distributions. 
-      To get some additional insight as to what the optimisation is doing, we can plot the likelihood functions given by Eq. 12 and 13, as well as the mean of each of their consituent binomial distributions for various $k$.
+      To get some additional insight as to what the optimisation is doing, we can plot the likelihood functions given by Eq. 12 and 13, as well as the mean of each of their constituent binomial distributions for various $k$.
     </p>
 
     <figure style="text-align: center;">
@@ -290,7 +290,7 @@
     </figure>
 
     <p>
-      The error probability is one-half the area under the blue distribution that lies the left of the decision boundary,
+      The error probability is one-half the area under the blue distribution that lies to the left of the decision boundary,
       plus one-half the area under the orange distribution that lies to the right of the decision boundary (weighted by the prior probabilities $p_1$ and $p_2$ in the general case).
     </p>
     

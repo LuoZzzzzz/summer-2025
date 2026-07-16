@@ -84,7 +84,7 @@
       Now, what has this got to do with the eigenvalue in the spectral decomposition of a measurement operator?
       Recall that the success probability of a measurement is given by $\mathrm{Tr}[M_i \rho_i]$. This can be rewritten as $\sum_j \lambda_{ij} \mathrm{Tr}[\ket{i_j}\bra{i_j}\rho_1]$, where $M_i = \sum_j \lambda_{ij} \ket{i_j}\bra{i_j}$.
       So we see that the modes with larger eigenvalues $\lambda_{ij}$ contributes more to the success probability of that particular class. 
-      This means that larger eigenvalues will tends to correlate with higher prevalence in across the dataset.
+      This means that larger eigenvalues will tend to correlate with higher prevalence across the dataset.
     </p>
 
     <p>
@@ -109,7 +109,7 @@
     <ol>
       <li>Form the PVM from 20 by 20 POVMs.</li>
       <li>Extract eigenvectors of each PVM that have eigenvalues above a certain threshold.</li>
-      <li>Orthogonalise these eigenvectors using polar decompositon.</li>
+      <li>Orthogonalise these eigenvectors using polar decomposition.</li>
       <li>Calculate the projection of the entire dataset onto each of these eigenvectors.</li>
       <li>Weigh the number of times a mode appears in the training set based on these projections.</li>
     </ol>
@@ -121,7 +121,7 @@
 
     <h2>Tuning</h2>
     <p>
-      A simple way to map projections to freqeuncies is to multiply the projections by say, 10, and then round off the results. 
+      A simple way to map projections to frequencies is to multiply the projections by say, 10, and then round off the results.
       This will give a large number of modes with frequency 1, some with frequency 2, and so on.
       It turns out that for each class, there will be one mode for which the frequency is much higher than the rest. 
     </p> 
@@ -172,7 +172,7 @@
     <p>
       This is quite insightful. 
       For example, the most prevalent shirt mode is clearly trying to detect "short" sleeves, and discriminating against longer sleeved sweaters.
-      On the other hand, the low eigenvalue modes tend to have increasingly fine spatial features - this is expected, as after all the complete set of modes must form a basis for all possible images and that includes images with high spatial freqeuncies.
+      On the other hand, the low eigenvalue modes tend to have increasingly fine spatial features - this is expected, as after all the complete set of modes must form a basis for all possible images and that includes images with high spatial frequencies.
     </p>
 
     <h2>Training</h2>
@@ -215,12 +215,12 @@
     <p>
       The straightforward way to train the diffractive network is, of course, to just get it to minimise the overlap between the output distributions of different classes.
       This method gives an accuracy of about 23%, which is very similar to mode sorting.
-      In fact, the detection regions of the two methods are virtually identical, which leads one to suspect that optimisation + mode sorting and direct backpropagtion are trying to implement the same measurements.
+      In fact, the detection regions of the two methods are virtually identical, which leads one to suspect that optimisation + mode sorting and direct backpropagation are trying to implement the same measurements.
     </p>
 
     <p>
       The original motivation behind the mode sorting business is that direct backprop, being a local optimisation method, may not be able to find the optimal measurement when subject to the additional physical constraints of a three layer diffractive network.
-      On the other hand, the mode sorting method begins with a convex optimisation that finds the global optimum solution, and then works from there, so intuitively it will lead to a more optimal solution - provided of course, that the measurement can actually be paramterised onto the diffractive network.
+      On the other hand, the mode sorting method begins with a convex optimisation that finds the global optimum solution, and then works from there, so intuitively it will lead to a more optimal solution - provided of course, that the measurement can actually be parameterised onto the diffractive network.
       Given both methods still seem to converge to the same set of mappings, this strongly suggests that the bottleneck here is not with local minima, but with the flexibility of the diffractive network.
     </p>
 
