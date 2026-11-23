@@ -1,220 +1,296 @@
-/* styles.css — editorial redesign
+/* styles.css: the design shared by every page on the site.
    ------------------------------------------------------------------
-   Fonts:
-     - Newsreader  → reading serif (body copy)
-     - Fraunces    → characterful serif for headings
-     - Poppins     → geometric sans for UI chrome
-   Palette: cool slate ink on soft neutral paper, indigo accent.
+   Taken from the Lie group memos: one justified text column in Latin
+   Modern Roman, with a right-hand margin for the contents list, figures
+   and notes; a single column on phones. The same file is copied into each
+   of the five repositories, so a change here should be copied to the others.
+   Fonts: Latin Modern Roman 12 (text) and Latin Modern Roman Caps 10, from
+   the GUST font project (GUST Font License), in fonts/.
    ------------------------------------------------------------------ */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Poppins:wght@400;500;600&display=swap');
+@font-face { font-family: "LM Roman"; src: url(fonts/lmroman12-regular.woff2) format("woff2");
+  font-weight: 400; font-style: normal; font-display: block; }
+@font-face { font-family: "LM Roman"; src: url(fonts/lmroman12-italic.woff2) format("woff2");
+  font-weight: 400; font-style: italic; font-display: block; }
+@font-face { font-family: "LM Roman"; src: url(fonts/lmroman12-bold.woff2) format("woff2");
+  font-weight: 700; font-style: normal; font-display: block; }
+@font-face { font-family: "LM Roman Caps"; src: url(fonts/lmromancaps10-regular.woff2) format("woff2");
+  font-weight: 400; font-style: normal; font-display: block; }
 
 :root {
-  --bg:          #EEF0F3;  /* page background            */
-  --paper:       #FFFFFF;  /* article "card" background  */
-  --accent:      #4C5FD5;  /* indigo accent              */
-  --accent-dark: #3B4BB0;  /* accent hover / active       */
-  --ink:         #202430;  /* primary text               */
-  --muted:       #5C6472;  /* secondary text              */
-  --border:      #DEE2E8;  /* hairlines                   */
-  --code-bg:     #EEF0F7;  /* inline code background      */
+  /* layout: one justified text column with a right-hand margin for figures and
+     notes, as in the printed chapter; a single column on phones */
+  --paper: #fdfdfb;
+  --ink: #161616;
+  --muted: #5b5a56;
+  --rule: #d6d3cc;
+  --accent: #1d4f8c;
+  --font-body: "LM Roman", "Latin Modern Roman", "CMU Serif", Georgia, "Times New Roman", serif;
+  --font-caps: "LM Roman Caps", "Latin Modern Roman Caps", var(--font-body);
+  --main: 34rem;
+  --gap: 2.2rem;
+  --margin: 12rem;
+  color-scheme: light;
 }
+html { font-size: 18px; background: var(--paper); -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-body);
+  font-size: 1rem; line-height: 1.5; font-kerning: normal; text-rendering: optimizeLegibility; }
+.page { max-width: calc(var(--main) + var(--gap) + var(--margin)); margin: 0 auto;
+  padding: 3.2rem 1.25rem 5rem; }
+article { padding-right: calc(var(--gap) + var(--margin)); }
+article::after { content: ""; display: block; clear: both; }
+/* one page holding every memo */
+article.memo { clear: both; border-top: 1px solid var(--rule); margin-top: 3.5rem; padding-top: 2.6rem; }
+article.tail:empty { display: none; }
+.site-nav .pn a { min-width: 1.2em; text-align: center; }
 
-body {
-  margin: 0;
-  font-family: "Newsreader", Georgia, "Times New Roman", serif;
-  font-size: 1rem;
-  background-color: var(--bg);
-  color: var(--ink);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+/* headings */
+.chap-head { margin-bottom: 2.2rem; }
+.kicker { font-family: var(--font-caps); font-size: 1.08rem; color: var(--muted); letter-spacing: 0.03em;
+  margin: 0 0 0.7rem; text-indent: 0; }
+h1 { font-size: 2.3rem; line-height: 1.14; font-weight: 700; margin: 0; text-wrap: balance; }
+.dateline { font-style: italic; color: var(--muted); margin: 0.9rem 0 0; text-indent: 0; }
+
+/* site navigation */
+.site-nav { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+  font-family: var(--font-caps); font-size: 0.9rem; letter-spacing: 0.02em;
+  padding-bottom: 0.55rem; margin-bottom: 2.4rem; border-bottom: 1px solid var(--rule); }
+.site-nav a { color: var(--muted); text-decoration: none; }
+.site-nav a:hover { color: var(--accent); }
+.site-nav .pn { display: flex; gap: 1.4rem; }
+.site-nav .off { color: var(--rule); }
+.pager { clear: both; display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; margin-top: 3rem;
+  padding-top: 0.9rem; border-top: 1px solid var(--rule); font-size: 0.9rem; line-height: 1.35; }
+.pager a { color: inherit; text-decoration: none; }
+.pager a:hover { color: var(--accent); }
+.pager .pl { display: block; font-family: var(--font-caps); color: var(--muted); letter-spacing: 0.02em;
+  margin-bottom: 0.15rem; }
+.pager .idx { text-align: center; }
+.pager .next { text-align: right; }
+h2 { font-size: 1.42rem; line-height: 1.25; font-weight: 700; margin: 2.4rem 0 0.9rem; text-wrap: balance;
+  scroll-margin-top: 1rem; }
+h2 .secnum { display: inline-block; min-width: 2.6em; }
+h3.probsec { font-size: 1rem; font-weight: 700; margin: 1.5rem 0 0.35rem; }
+h4.ptitle { font-size: 1rem; font-weight: 700; margin: 1.05rem 0 0.1rem; scroll-margin-top: 1rem; }
+h4.ptitle a { color: inherit; text-decoration: none; }
+h4.ptitle a:hover { color: var(--accent); }
+.stars { letter-spacing: 0.05em; }
+
+/* running text: LaTeX paragraphs (indented, no space between them) */
+p { margin: 0; text-indent: 1.5em; text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+p.ni { text-indent: 0; }
+.runin { font-weight: 700; margin-right: 0.35em; }
+p.runp { margin-top: 0.7rem; }
+em { font-style: italic; }
+ul, ol { margin: 0.5rem 0 0.5rem 1.6em; padding: 0; }
+li { margin: 0.12rem 0; }
+ol.alpha { list-style: none; counter-reset: alpha; }
+/* contents page */
+ol.memos { list-style: none; margin: 0.8rem 0 0; padding: 0; }
+ol.memos li { margin: 0 0 1.15rem; }
+ol.memos .mk { display: block; font-family: var(--font-caps); color: var(--muted); font-size: 0.9rem;
+  letter-spacing: 0.02em; }
+ol.memos a.mt { font-weight: 700; font-size: 1.12rem; color: var(--ink); text-decoration: none; }
+ol.memos a.mt:hover { color: var(--accent); }
+ol.memos .mb { margin: 0.15rem 0 0; text-indent: 0; }
+ol.alpha > li { counter-increment: alpha; position: relative; }
+ol.alpha > li::before { content: "(" counter(alpha, lower-alpha) ")"; position: absolute; left: -1.6em; }
+a.xref { color: inherit; text-decoration: underline; text-decoration-color: var(--rule);
+  text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+a.xref:hover { color: var(--accent); text-decoration-color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+[id] { scroll-margin-top: 1rem; }
+
+/* contents, set in the margin like a margin note */
+.toc { float: right; clear: right; width: var(--margin); margin-right: calc(-1 * (var(--margin) + var(--gap)));
+  font-size: 0.8rem; line-height: 1.35; margin-top: 0.2rem; }
+.toc-head { text-indent: 0; font-family: var(--font-caps); color: var(--muted); margin-bottom: 0.35rem;
+  letter-spacing: 0.02em; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.25rem; }
+.toc a { color: inherit; text-decoration: none; display: grid; grid-template-columns: 2.2em 1fr; }
+.toc a:hover { color: var(--accent); }
+.tnum { color: var(--muted); }
+
+/* displayed equations: centred, number at the right margin; a wide display first
+   gives up its centring (as in LaTeX), and only then scrolls */
+.eqn { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, max-content) minmax(max-content, 1fr);
+  align-items: center; column-gap: 0.5rem; margin: 0.55rem 0; }
+.eqn::before { content: ""; }
+.eqn.multi { align-items: end; }
+.eqn-math { min-width: 0; overflow-x: auto; overflow-y: hidden; padding: 0.2rem 0; }
+/* KaTeX's vlists stick out 2px past their measured width (margin-right:-2px);
+   pad the display so that this never shows up as a scrollbar */
+.eqn-math > .katex-display { padding: 0 3px; }
+.eqn-num { justify-self: end; white-space: nowrap; }
+.eqn.multi .eqn-num { padding-bottom: 0.55rem; }
+.katex { font-size: 1em; text-indent: 0; }
+.katex-display { margin: 0; }
+.eqn .katex-display > .katex { text-align: center; }
+
+/* margin figures and sidenotes */
+.mfig, .sidenote { float: right; clear: right; width: var(--margin);
+  margin-right: calc(-1 * (var(--margin) + var(--gap))); text-indent: 0; }
+.mfig { text-align: center; margin-top: 0.3rem; margin-bottom: 1rem; }
+.mfig img { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+.mfig .cap, figure.wfig figcaption { display: block; font-size: 0.8rem; margin-top: 0.35rem; }
+.sidenote { font-size: 0.8rem; line-height: 1.35; text-align: left; margin-top: 0.25rem; margin-bottom: 0.9rem;
+  hyphens: auto; }
+.sidenote sup, .fnref { font-size: 0.72em; line-height: 0; }
+.fnref a { color: var(--accent); text-decoration: none; padding: 0 0.08em; }
+.endnotes { display: none; }
+figure.wfig { margin: 1.4rem 0; text-align: center; }
+figure.wfig img { max-width: 100%; height: auto; }
+
+/* examples, remarks, lemmas, proofs, limericks */
+.example { margin: 1rem 0; }
+.remark, .remarks { font-size: 0.9rem; line-height: 1.42; margin: 0.55rem 0; }
+.rlabel { font-family: var(--font-caps); margin-right: 0.3em; }
+.rnum { margin-right: 0.35em; }
+.club, .nowrap { white-space: nowrap; }
+.lemma { margin: 0.9rem 0; }
+.lemma p { font-style: italic; }
+.lemma b { font-style: normal; }
+.proof { margin: 0.5rem 0 0.9rem; }
+.qed { float: right; margin-left: 1em; }
+.limerick { display: flex; justify-content: center; margin: 1.3rem 0; }
+.limerick p { text-indent: 0; text-align: left; font-style: italic; font-size: 0.92rem; }
+.limerick .line { display: block; }
+.limerick .ind { padding-left: 1.6em; }
+h4.ptitle + p { text-indent: 0; }
+
+@media (max-width: 920px) {
+  .page { max-width: calc(var(--main) + 2.5rem); padding-top: 2.4rem; }
+  article { padding-right: 0; }
+  .mfig { float: none; display: block; width: auto; margin: 0.9rem auto; }
+  .sidenote { display: none; }
+  .endnotes { display: block; font-size: 0.85rem; line-height: 1.4; margin: 1.2rem 0 0;
+    padding-top: 0.5rem; border-top: 1px solid var(--rule); }
+  .endnotes ol { margin: 0; padding-left: 1.4em; }
+  .endnotes li { margin: 0.2rem 0; }
+  .endnotes .back { color: var(--accent); text-decoration: none; }
+  .toc { float: none; width: auto; margin: 0 0 2rem; font-size: 0.88rem; }
+  .toc ol { grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); column-gap: 1.5rem; }
 }
-
-/* ---- Top bar ------------------------------------------------------ */
-header {
-  background-color: var(--paper);
-  color: var(--ink);
-  padding: 0.6rem 1.2rem;
-  font-family: "Poppins", -apple-system, sans-serif;
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+@media (max-width: 600px) {
+  html { font-size: 17px; }
+  .page { padding: 1.6rem 1rem 3.5rem; }
+  h1 { font-size: 1.85rem; }
+  p { text-align: left; }
+  .eqn { column-gap: 0.3rem; }
+  .eqn.stack { grid-template-columns: minmax(0, 1fr); }
+  .eqn.stack::before { display: none; }
+  .eqn.stack .eqn-num { margin-top: -0.25rem; }
+  .eqn.stack.multi .eqn-num { padding-bottom: 0; }
+  .eqn .katex { font-size: 0.94em; }
+  .site-nav { margin-bottom: 1.8rem; }
+  .pager { grid-template-columns: 1fr 1fr; }
+  .pager .idx { grid-column: 1 / -1; grid-row: 2; }
 }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 
-/* Little accent mark before the wordmark */
-header::before {
-  content: "◆";
-  color: var(--accent);
-  font-size: 0.8rem;
-  line-height: 1;
-}
+/* ------------------------------------------------------------------
+   Changes to the memos' design, made for the whole site.
+   ------------------------------------------------------------------ */
 
-header a {
-  color: var(--ink);
-  font-weight: 600;
-}
+/* paragraphs start flush (no first-line indent), with a small gap between
+   consecutive paragraphs instead, so paragraph breaks stay visible */
+p { text-indent: 0; }
+p + p, p + figure.mfig + p { margin-top: 0.75em; }
 
-header a:hover {
-  color: var(--accent);
-  text-decoration: none;
-}
+/* ------------------------------------------------------------------
+   Additions for the rest of the site.
+   Everything above is the design of the Lie group memos, unchanged.
+   The rules below give the same look to things those memos don't use:
+   index lists, plain links, sub-headings, tables, code, hints, figures,
+   videos, rules and MathJax output.
+   ------------------------------------------------------------------ */
 
-/* ---- Article container ------------------------------------------- */
-main {
-  max-width: 720px;
-  margin: 1.4rem auto;
-  padding: 1.6rem 2rem;
-  background-color: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  box-shadow: 0 1px 2px rgba(32, 36, 48, 0.04),
-              0 12px 32px rgba(32, 36, 48, 0.06);
-}
+/* contents list built by site.js from a page's headings (no section numbers) */
+.toc.plain a { display: block; }
 
-/* ---- Headings ---------------------------------------------------- */
-h1, h2, h3 {
-  font-family: "Fraunces", "Newsreader", Georgia, serif;
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  line-height: 1.2;
-  color: var(--ink);
-}
+/* plain links in running text */
+:where(article) a:where(:not([class])) { color: var(--accent); text-decoration: underline;
+  text-decoration-color: rgba(29, 79, 140, 0.35); text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em; }
+:where(article) a:where(:not([class])):hover { text-decoration-color: var(--accent); }
 
-h1 {
-  font-size: 1.7rem;
-  margin: 0.1em 0 0.4em;
-}
+/* a second h1 starts a new part of an index page; h3 is a subsection */
+article > h1 { font-size: 1.75rem; line-height: 1.2; margin: 2.8rem 0 1rem; scroll-margin-top: 1rem; }
+hr + h1 { margin-top: 1.4rem; }
+h3:not(.probsec) { font-size: 1.1rem; line-height: 1.3; font-weight: 700; margin: 1.8rem 0 0.6rem;
+  text-wrap: balance; scroll-margin-top: 1rem; }
+hr { border: 0; border-top: 1px solid var(--rule); margin: 1.6rem 0; }
+/* small headings within a section; "sub it" for the lighter, italic kind */
+h4.sub { font-size: 1rem; line-height: 1.35; font-weight: 700; margin: 1.35rem 0 0.3rem; scroll-margin-top: 1rem; }
+h4.sub.it { font-weight: 400; font-style: italic; }
 
-h2 {
-  font-size: 1.25rem;
-  margin-top: 1.4rem;
-  margin-bottom: 0.6rem;
-}
+/* boxed notes and key results */
+.boxed { margin: 1.1rem 0; padding: 0.7rem 0.95rem; border: 1px solid var(--rule); background: #f7f6f1;
+  text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+@media (max-width: 600px) { .boxed { text-align: left; } }
 
-h3 {
-  font-size: 1.08rem;
-  margin: 1rem 0 0.4rem;
-}
+/* index pages: each list of memos reads like a table of contents, with the date
+   where a book would put the page number:
+   <ul class="entries"><li><a href="x.html">Title</a><span class="date">15/10/25</span></li>
+   A topic with no page yet is <li class="planned">Title</li>. */
+ul.entries { list-style: none; margin: 0.75rem 0 0.4rem; padding: 0; }
+ul.entries li { display: flex; align-items: baseline; align-items: last baseline; margin: 0 0 0.38rem; }
+ul.entries li > a { order: 1; color: var(--ink); text-decoration: none; }
+ul.entries li > a:hover { color: var(--accent); }
+ul.entries li:has(> .date)::after { content: ""; order: 2; flex: 1 0 1.5em; margin: 0 0.45em;
+  height: 0.3em; background: radial-gradient(circle, #a29e94 0.06em, transparent 0.075em)
+  left bottom / 0.45em 0.16em repeat-x; }
+ul.entries .date { order: 3; color: var(--muted); font-size: 0.9rem; white-space: nowrap; }
+ul.entries li.planned { color: var(--muted); font-style: italic; }
 
+/* contents list in the margin: the parts of an index page, with their sections under them */
+.toc li.part { font-family: var(--font-caps); color: var(--muted); letter-spacing: 0.02em; margin-top: 0.5rem; }
+.toc li.part:first-child { margin-top: 0; }
+.toc li.part ~ li:not(.part) { padding-left: 0.8em; }
 
-/* ---- Body copy --------------------------------------------------- */
-p {
-  text-align: left;
-  margin: 0.65em 0;
-}
+/* tables: rules above and below, as in a printed table */
+article table { border-collapse: collapse; margin: 1.1rem auto; font-size: 0.92rem; line-height: 1.35;
+  border-top: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink);
+  display: block; width: fit-content; max-width: 100%; overflow-x: auto;
+  font-family: var(--font-body) !important; /* some tables set their own font inline */ }
+th, td { padding: 0.3rem 0.65rem; vertical-align: middle; }
+thead th, thead td { border-bottom: 1px solid var(--ink); font-weight: 700; }
+article tbody tr + tr > * { border-top: 1px solid #e8e5de; }
 
-b, strong { font-weight: 600; }
+/* code */
+code, pre { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace; }
+code { font-size: 0.84em; background: #f1efe8; padding: 0.08em 0.3em; border-radius: 3px; }
+pre { margin: 1rem 0; padding: 0.75rem 0.95rem; background: #f4f2ec; border: 1px solid var(--rule);
+  border-radius: 3px; overflow-x: auto; font-size: 0.8rem; line-height: 1.45; text-align: left; }
+pre code, pre code.hljs { background: none; padding: 0; font-size: inherit; border-radius: 0; overflow: visible; }
 
-img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 10px;
-}
+/* hints and solutions that open on a click */
+details { margin: 0.45rem 0 0.7rem; }
+summary { cursor: pointer; width: fit-content; font-family: var(--font-caps); color: var(--muted);
+  letter-spacing: 0.02em; }
+summary:hover { color: var(--accent); }
+details > :not(summary) { margin-left: 1.1em; }
+details[open] > summary { margin-bottom: 0.3rem; }
 
-/* ---- Code -------------------------------------------------------- */
-code {
-  background: var(--code-bg);
-  font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
-  padding: 0.15em 0.4em;
-  border-radius: 5px;
-  font-size: 88%;
-  color: var(--accent-dark);
-}
+/* placeholder pictures in the margin are only shown when there is a margin */
+@media (max-width: 920px) { .mfig.placeholder { display: none; } }
 
-/* ---- Links ------------------------------------------------------- */
-a {
-  color: var(--accent-dark);
-  text-decoration: none;
-  text-underline-offset: 0.15em;
-  transition: color 0.2s ease;
-}
+/* figures, images and videos */
+figure { margin: 1.4rem 0; text-align: center; }
+figcaption { display: block; font-size: 0.8rem; line-height: 1.35; margin-top: 0.35rem; }
+article img, article video { max-width: 100%; height: auto; }
+video { display: block; margin: 0 auto; }
 
-a:hover {
-  color: var(--accent);
-  text-decoration: underline;
-}
-
-/* ---- Navigation lists (index page) ------------------------------- */
-nav ul {
-  list-style: none;
-  padding-left: 0;
-  margin: 0.3rem 0 0;
-}
-
-nav li {
-  font-family: "Poppins", -apple-system, sans-serif;
-  font-size: 0.92rem;
-  color: var(--muted);
-  padding: 0.08rem 0.6rem;
-  border-radius: 6px;
-  transition: background-color 0.15s ease;
-}
-
-nav li:hover {
-  background-color: var(--bg);
-}
-
-nav a {
-  color: var(--ink);
-  font-weight: 400;
-}
-
-nav a:hover {
-  color: var(--accent);
-  text-decoration: none;
-}
-
-/* ---- "Index" back button on article pages ------------------------ */
-.page-nav {
-  margin-bottom: 0.9rem;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  font-family: "Poppins", -apple-system, sans-serif;
-  font-size: 0.85rem;
-  font-weight: 400;
-  color: var(--muted);
-  padding: 0;
-  transition: color 0.18s ease;
-}
-
-.btn:hover {
-  color: var(--accent);
-  text-decoration: none;
-}
-
-/* ---- MathJax fixes (unchanged behaviour) ------------------------- */
-mjx-container[display="true"] {
-  overflow-x: auto;
-  overflow-y: hidden;
-  max-width: 100%;
-}
-
-mjx-container[display="true"] > svg,
-mjx-container[display="true"] > mjx-math {
-  max-width: 100%;
-}
-
-.MathJax_Display,
-mjx-container {
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-
-/* ---- Small screens ----------------------------------------------- */
-@media (max-width: 640px) {
-  main {
-    margin: 0.6rem;
-    padding: 1.1rem 1rem;
-    border-radius: 10px;
-  }
-  h1 { font-size: 1.5rem; }
-  h2 { font-size: 1.15rem; }
-}
+/* MathJax output: displays get the same spacing as the memos' equations, and
+   scroll sideways rather than overflow when they are too wide. MathJax gives a
+   numbered equation an inline min-width, which would widen the whole page on a
+   phone instead, so that is overridden. */
+mjx-container { text-indent: 0; }
+article mjx-container[jax="CHTML"][display="true"] { margin: 0.55rem 0; padding: 0.2rem 0;
+  overflow-x: auto; overflow-y: hidden; max-width: 100%; min-width: 0 !important; }
+/* MathJax's hidden copy of each formula for screen readers can measure wider than the
+   formula itself, which would widen the page on a phone */
+mjx-assistive-mml { max-width: 100%; }
+/* an inline formula wider than its paragraph (marked by site.js) scrolls on its own */
+article mjx-container.wide { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden;
+  vertical-align: middle; }
