@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Summer 2025</title>
-
-  <link rel="stylesheet" href="styles.css" />
-
-  <!-- MathJax LaTeX Support -->
-  <script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Summer 2025</title>
+<link rel="stylesheet" href="styles.css">
+<script>
     window.MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -16,25 +14,17 @@
       }
     };
   </script>
-  <script
-    id="MathJax-script"
-    async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-  ></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="site.js" defer></script>
 </head>
 <body>
-  <header>
-    Summer 2025
-  </header>
-
-  <main>
-    <nav class="page-nav">
-      <a href="index.html" class="btn">Index</a> | 
-      <a href="week1.html" class="btn">Prev</a> | 
-      <a href="week2.html" class="btn">Next</a>
-    </nav>
-
-    <h1>Optimisation of separable POVMs</h1>
+<main class="page" id="top">
+<nav class="site-nav" aria-label="Site"><a href="index.html">Summer 2025</a><span class="pn"><a href="week1.html" rel="prev" title="Optimising separable measurements of qubits">← Previous</a><a href="week2.html" rel="next" title="Converting a POVM to a projective measurement">Next →</a></span></nav>
+<article>
+<header class="chap-head">
+<p class="kicker">Summaries</p>
+<h1>Optimisation of separable POVMs</h1>
+</header>
     <p>
       Short run-through of the POVM optimisation code <a href="https://github.com/LuoZzzzzz/separable_povm_optimisation">here</a>. More details coming.
     </p>
@@ -134,7 +124,8 @@
     <p>
       A common pathology is that the POVM optimised for $l$ copies may in fact score higher at some target $k \neq l$ than the POVM that was actually trained for $k$. To correct this, each subsequent round evaluates every state in the pool on every $k$ to build a cross-$k$ score table, identifies which target values would benefit from re-optimisation (ie. where some other state scores strictly higher by more than <code>reassignment_tol</code>), and re-runs L-BFGS for each such $k$ using the winning foreign state as the warm-start. This iterates until no $k$ wants to switch (a fixed point) or <code>max_rounds</code> is reached. Candidates are prioritised by the size of the available improvement. The $k = 1$ entry is never re-optimised, since its SDP solution is already globally optimal.
     </p>
-
-  </main>
+<nav class="pager" aria-label="Previous and next pages"><a class="prev" href="week1.html" rel="prev"><span class="pl">← Previous</span>Optimising separable measurements of qubits</a><a class="idx" href="index.html"><span class="pl">Index</span>Summer 2025</a><a class="next" href="week2.html" rel="next"><span class="pl">Next →</span>Converting a POVM to a projective measurement</a></nav>
+</article>
+</main>
 </body>
 </html>

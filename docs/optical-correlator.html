@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Optical Correlator</title>
-
-  <!-- Link external CSS -->
-  <link rel="stylesheet" href="styles.css" />
-
-  <!-- MathJax LaTeX Support -->
-  <script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Optical Correlator</title>
+<link rel="stylesheet" href="styles.css">
+<script>
     window.MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -16,23 +13,17 @@
       }
     };
   </script>
-  <script
-    id="MathJax-script"
-    async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-  ></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="site.js" defer></script>
 </head>
 <body>
-  <header>
-    Summer 2025 - Optical Correlators
-  </header>
-
-  <main>
-    <nav class="page-nav">
-      <a href="index.html" class="btn">Index</a>
-    </nav>
-
-    <h1>Setup</h1>
+<main class="page" id="top">
+<nav class="site-nav" aria-label="Site"><a href="index.html">Summer 2025</a><span class="pn"><span class="off">← Previous</span><a href="code-for-mcsd.html" rel="next" title="Objective function for multicopy states">Next →</a></span></nav>
+<article>
+<header class="chap-head">
+<p class="kicker">Summer 2025 - Optical Correlators</p>
+<h1>Setup</h1>
+</header>
     <p>
       Take a $4f$ system and place a spatial light modulator (SLM) in the Fourier plane. 
       Consider a single point source. 
@@ -182,7 +173,8 @@
       Converting this to spatial coordinates gives $X_{\mathrm{blur}} = \frac{\lambda z}{2 W}$. 
       The resolution is limited by the ratio $\frac{X_\mathrm{max}}{2 X_{\mathrm{blur}}} = \frac{W}{d} = N$, which is the number of pixels on the SLM. 
     </p>
-
-  </main>
+<nav class="pager" aria-label="Previous and next pages"><span class="prev"></span><a class="idx" href="index.html"><span class="pl">Index</span>Summer 2025</a><a class="next" href="code-for-mcsd.html" rel="next"><span class="pl">Next →</span>Objective function for multicopy states</a></nav>
+</article>
+</main>
 </body>
 </html>

@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Code Snippet 1</title>
-
-  <!-- Link external CSS -->
-  <link rel="stylesheet" href="styles.css" />
-
-  <!-- MathJax LaTeX Support -->
-  <script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code Snippet 1</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+<link rel="stylesheet" href="styles.css">
+<script>
     window.MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -17,28 +15,19 @@
       }
     };
   </script>
-  <script
-    id="MathJax-script"
-    async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-  ></script>
-
-  <!-- Python Highlighting -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <script>hljs.highlightAll();</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<script src="site.js" defer></script>
 </head>
 <body>
-  <header>
-    Code Snippet 1
-  </header>
-
-  <main>
-    <nav class="page-nav">
-      <a href="index.html" class="btn">Index</a>
-    </nav>
-
-    <h1>Distributing balls in bins</h1>
+<main class="page" id="top">
+<nav class="site-nav" aria-label="Site"><a href="index.html">Summer 2025</a><span class="pn"><a href="code-for-mcsd.html" rel="prev" title="Objective function for multicopy states">← Previous</a><span class="off">Next →</span></span></nav>
+<article>
+<header class="chap-head">
+<p class="kicker">Code Snippet 1</p>
+<h1>Distributing balls in bins</h1>
+</header>
 
     <p>
         Suppose for whatever reason we want to get all the possible ways of distributing $k$ balls in $n$ bins. The following small piece of code accomplishes it recursively in a few simple lines.
@@ -79,6 +68,8 @@
     <p>
       Posting this here mainly to experiment with code blocks. But you do agree that the function is pretty neat, right? Recursion is cool 😎.
     </p>
-
+<nav class="pager" aria-label="Previous and next pages"><a class="prev" href="code-for-mcsd.html" rel="prev"><span class="pl">← Previous</span>Objective function for multicopy states</a><a class="idx" href="index.html"><span class="pl">Index</span>Summer 2025</a><span class="next"></span></nav>
+</article>
+</main>
 </body>
 </html>

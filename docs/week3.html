@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Summer 2025 - Week 3</title>
-
-  <!-- Link external CSS -->
-  <link rel="stylesheet" href="styles.css" />
-
-  <!-- MathJax LaTeX Support -->
-  <script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Summer 2025 - Week 3</title>
+<link rel="stylesheet" href="styles.css">
+<script>
     window.MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -16,24 +13,17 @@
       }
     };
   </script>
-  <script
-    id="MathJax-script"
-    async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-  ></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="site.js" defer></script>
 </head>
 <body>
-  <header>
-    Summer 2025
-  </header>
-
-  <main>
-    <nav class="page-nav">
-      <a href="index.html" class="btn">Index</a> | 
-      <a href="week2.html" class="btn">Prev</a>
-    </nav>
-
-    <h1>Classification by mode sorting</h1>
+<main class="page" id="top">
+<nav class="site-nav" aria-label="Site"><a href="index.html">Summer 2025</a><span class="pn"><a href="week2.html" rel="prev" title="Converting a POVM to a projective measurement">← Previous</a><span class="off">Next →</span></span></nav>
+<article>
+<header class="chap-head">
+<p class="kicker">Summaries</p>
+<h1>Classification by mode sorting</h1>
+</header>
 
     <p>
       This week we try to implement the mode sorting scheme from week 2. 
@@ -223,7 +213,8 @@
       On the other hand, the mode sorting method begins with a convex optimisation that finds the global optimum solution, and then works from there, so intuitively it will lead to a more optimal solution - provided of course, that the measurement can actually be parameterised onto the diffractive network.
       Given both methods still seem to converge to the same set of mappings, this strongly suggests that the bottleneck here is not with local minima, but with the flexibility of the diffractive network.
     </p>
-
-  </main>
+<nav class="pager" aria-label="Previous and next pages"><a class="prev" href="week2.html" rel="prev"><span class="pl">← Previous</span>Converting a POVM to a projective measurement</a><a class="idx" href="index.html"><span class="pl">Index</span>Summer 2025</a><span class="next"></span></nav>
+</article>
+</main>
 </body>
 </html>

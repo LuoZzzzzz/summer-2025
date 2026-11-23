@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Optimisation for Multicopy States</title>
-
-  <!-- Link external CSS -->
-  <link rel="stylesheet" href="styles.css" />
-
-  <!-- MathJax LaTeX Support -->
-  <script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Optimisation for Multicopy States</title>
+<link rel="stylesheet" href="styles.css">
+<script>
     window.MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -16,23 +13,17 @@
       }
     };
   </script>
-  <script
-    id="MathJax-script"
-    async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-  ></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="site.js" defer></script>
 </head>
 <body>
-  <header>
-    Summer 2025 - Optimisation for Multicopy States
-  </header>
-
-  <main>
-    <nav class="page-nav">
-      <a href="index.html" class="btn">Index</a>
-    </nav>
-
-    <h1>Multicopy state discrimination</h1>
+<main class="page" id="top">
+<nav class="site-nav" aria-label="Site"><a href="index.html">Summer 2025</a><span class="pn"><a href="optical-correlator.html" rel="prev" title="Optical correlator">← Previous</a><a href="codesnippet1.html" rel="next" title="Code snippet 1 - balls in bins">Next →</a></span></nav>
+<article>
+<header class="chap-head">
+<p class="kicker">Summer 2025 - Optimisation for Multicopy States</p>
+<h1>Multicopy state discrimination</h1>
+</header>
     <p>
       A quantum POVM (positive operator valued measure) is a set of positive semidefinite matrices that sum to
       the identity. In the context of quantum state discrimination, the goal is to find a POVM that distinguishes
@@ -133,7 +124,8 @@
       Q \, \text{diag}(\sqrt{\lambda_1}, \dots, \sqrt{\lambda_d}) \, Q^t 
       = I$.
     </p>
-
-  </main>
+<nav class="pager" aria-label="Previous and next pages"><a class="prev" href="optical-correlator.html" rel="prev"><span class="pl">← Previous</span>Optical correlator</a><a class="idx" href="index.html"><span class="pl">Index</span>Summer 2025</a><a class="next" href="codesnippet1.html" rel="next"><span class="pl">Next →</span>Code snippet 1 - balls in bins</a></nav>
+</article>
+</main>
 </body>
 </html>
